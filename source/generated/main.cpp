@@ -1,8 +1,20 @@
 #include <config.hpp>
 #include <print>
+#include <glad/glad.h>
+#include <MainWindow.hpp>
 
-i32 main()
+int main()
 {
-    std::print("henlo, world!\n");
-    return 0;
+
+
+	RetroFuturaGUI::MainWindow mainWindow("Test Window", 1280, 720);
+	
+	while (!mainWindow.WindowShouldClose())
+	{
+		mainWindow.Draw();
+	}
+
+
+	glfwTerminate();
+	return 0;
 }
