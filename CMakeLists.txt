@@ -26,6 +26,7 @@ target_link_libraries("TestProject" PRIVATE
     "RetroFuturaGUI"
 )
 
-#run cmake:  & "C:\Program Files\CMake\bin\cmake.exe" .. CMakeLists.txt -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -B x64-windows
+#run cmake (DEBUG):   & "C:\Program Files\CMake\bin\cmake.exe" .. CMakeLists.txt -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DBUILDTYPE=Debug   -B x64-windows
+#run cmake (RELEASE): & "C:\Program Files\CMake\bin\cmake.exe" .. CMakeLists.txt -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DBUILDTYPE=Release -B x64-windows
 #build: & "C:\Program Files\CMake\bin\cmake.exe" --build x64-windows
 #run: x64-windows/Debug/TestProject.exe
