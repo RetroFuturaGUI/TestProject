@@ -5,11 +5,24 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
 {
     _members = std::make_unique<MainWindow_p>();
     _members->_window = std::make_unique<RetroFuturaGUI::Window>(windowTitle, width, height);
+
+
     GLFWwindow* window = _members->_window->GetGlfwWindow();
     RetroFuturaGUI::Projection& projection = *_members->_window->GetProjection(); 
     glm::vec2 resolution = projection.GetResolution();
     std::string fontPath = PlatformBridge::Fonts::GetFontsInformation().front().second;
 
+    std::string path = PlatformBridge::Paths::GetExecutablePath();
+
+#if defined(_WIN32) || defined(_WIN64)
+    path = path.substr(0, path.find_last_of(R"(\)"));
+    path.append(R"(\Resources\img\FrutigerAero.png)");
+#else
+    path = path.substr(0, path.find_last_of(R"(/)"));
+    path.append("/ShaderSource/");
+#endif
+
+    _members->_window->SetBackgroundImage(path);
 
     IdentityParams identityGrid = { "testGrid", this, WidgetTypeID::Grid2d, window };
 	GeometryParams2D geometryGrid = { projection, glm::vec2(0.0f, 0.0f), resolution, 0.0f };
