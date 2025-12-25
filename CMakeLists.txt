@@ -14,16 +14,30 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/RetroFuturaGUI")
 
 add_executable("TestProject" 
     "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/main.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/MainWindow_setup.cpp"
 )
 
 target_include_directories("TestProject"  PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/source"
     "${CMAKE_CURRENT_SOURCE_DIR}/source/code"
     "${CMAKE_CURRENT_SOURCE_DIR}/source/generated"
+    "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl"
 )
 
 target_link_libraries("TestProject" PRIVATE
     "RetroFuturaGUI"
+)
+
+add_custom_command(TARGET "TestProject" POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_CURRENT_SOURCE_DIR}/RetroFuturaGUI/source/Shaders/ShaderSource"
+        "$<TARGET_FILE_DIR:TestProject>/ShaderSource"
+)
+
+add_custom_command(TARGET "TestProject" POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_CURRENT_SOURCE_DIR}/RetroFuturaGUI/Resources"
+        "$<TARGET_FILE_DIR:TestProject>/Resources"
 )
 
 #run cmake (DEBUG):   & "C:\Program Files\CMake\bin\cmake.exe" .. CMakeLists.txt -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DBUILDTYPE=Debug   -B x64-windows

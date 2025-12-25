@@ -1,20 +1,24 @@
 #include <config.hpp>
 #include <print>
-#include <glad/glad.h>
-#include <MainWindow.hpp>
+#include "Window.hpp"
+#include <chrono>
+#include <thread>
+#include "RetroFuturaGuiInit.hpp"
+#include "MainWindow.hpp"
 
-int main()
+i32 main()
 {
+	PlatformBridge::RefreshPlatformBridge();
+	RetroFuturaGUI::GlfwInit();
 
+	TestProject::MainWindow mainWindowTest("RetroFuturaGUI Test", 1280, 720);
 
-	RetroFuturaGUI::MainWindow mainWindow("Test Window", 1280, 720);
-	
-	while (!mainWindow.WindowShouldClose())
+	while(!mainWindowTest.WindowShouldClose())
 	{
-		mainWindow.Draw();
+		mainWindowTest.Draw();
 	}
 
-
+	RetroFuturaGUI::GlfwTerminate();
 	
 	return 0;
 }
