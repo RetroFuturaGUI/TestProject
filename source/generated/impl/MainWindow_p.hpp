@@ -8,6 +8,7 @@ namespace TestProject
     class MainWindow_p
     {
     public:
+        std::string _name { "MainWindow" };
         std::unique_ptr<RetroFuturaGUI::Window> _window;
 
 

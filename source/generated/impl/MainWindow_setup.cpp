@@ -3,8 +3,11 @@
 
 void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 width, const i32 height)
 {
+    bool frutiger = false;
+
+
     _members = std::make_unique<MainWindow_p>();
-    _members->_window = std::make_unique<RetroFuturaGUI::Window>(windowTitle, width, height);
+    _members->_window = std::make_unique<RetroFuturaGUI::Window>(_members->_name, windowTitle, width, height);
 
 
     GLFWwindow* window = _members->_window->GetGlfwWindow();
@@ -12,17 +15,20 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
     glm::vec2 resolution = projection.GetResolution();
     std::string fontPath = PlatformBridge::Fonts::GetFontsInformation().front().second;
 
-    std::string path = PlatformBridge::Paths::GetExecutablePath();
 
+    if(frutiger)
+    {
+        std::string path = PlatformBridge::Paths::GetExecutablePath();
 #if defined(_WIN32) || defined(_WIN64)
-    path = path.substr(0, path.find_last_of(R"(\)"));
-    path.append(R"(\Resources\img\FrutigerAero.png)");
+        path = path.substr(0, path.find_last_of(R"(\)"));
+        path.append(R"(\Resources\img\FrutigerAero.png)");
 #else
-    path = path.substr(0, path.find_last_of(R"(/)"));
-    path.append("/ShaderSource/");
+        path = path.substr(0, path.find_last_of(R"(/)"));
+        path.append("/ShaderSource/");
 #endif
 
-    _members->_window->SetBackgroundImage(path);
+      _members->_window->SetBackgroundImage(path);
+    }
 
     IdentityParams identityGrid = { "testGrid", this, WidgetTypeID::Grid2d, window };
 	GeometryParams2D geometryGrid = { projection, glm::vec2(0.0f, 0.0f), resolution, 0.0f };
@@ -40,13 +46,40 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
 	RetroFuturaGUI::BorderParams borderParams = { glm::vec4(0.3f, 0.3f, 0.3f, 1.0f), 5.0f };
 
 
-	_members->_testButton = std::make_unique<RetroFuturaGUI::Button>(identityB, geometryB, textParamsB, borderParams);
+	_members->_testButton = std::make_unique<RetroFuturaGUI::Button>(identityB, geometryB, textParamsB, 5.0f);
+
+
+    if(frutiger)
+    {
+        
 	_members->_testButton->SetCornerRadii(glm::vec4(45.0f));
-	//_button->SetWindowBackgroundImageTextureID(_backgroundImage->GetTextureID());
+	_members->_testButton->SetWindowBackgroundImageTextureID(_members->_window->GetBackgroundImageId());
 	_members->_testButton->SetBackgroundColor(glm::vec4(0.0f, 0.0f, 1.0f, 0.65f), RetroFuturaGUI::ColorSetState::Enabled);
 	_members->_testButton->SetBackgroundColor(glm::vec4(0.1f, 0.1f, 1.0f, 0.65f), RetroFuturaGUI::ColorSetState::Hover);
 	_members->_testButton->SetBackgroundColor(glm::vec4(0.2f, 0.2f, 1.0f, 0.75f), RetroFuturaGUI::ColorSetState::Clicked);
 
+    
+    }
+    else
+    {
+
+        std::vector<glm::vec4> testv = std::vector<glm::vec4>({{ 0.024f, 0.478f, 0.965f, 1.0f},{ 0.024f, 0.478f, 0.965f, 1.0f} ,  { 0.980f, 0.851f, 0.875f, 1.0f }
+            , { 0.965f, 0.761f, 0.965f, 1.0f }, { 0.024f, 0.478f, 0.965f, 1.0f},{ 0.024f, 0.478f, 0.965f, 1.0f} , { 0.718f, 0.976f, 0.992f, 1.0f }, { 0.980f, 0.851f, 0.875f, 1.0f }, { 0.980f, 0.851f, 0.875f, 1.0f }});
+        _members->_testButton->SetCornerRadii(glm::vec4(20.0f));
+        _members->_testButton->SetBackgroundColor(glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), RetroFuturaGUI::ColorSetState::Enabled);
+        _members->_testButton->SetBackgroundColor(glm::vec4(0.3f, 0.3f, 0.3f, 1.0f), RetroFuturaGUI::ColorSetState::Hover);
+        _members->_testButton->SetBackgroundColor(glm::vec4(0.4f, 0.4f, 0.4f, 1.0f), RetroFuturaGUI::ColorSetState::Clicked);
+
+        _members->_testButton->SetBorderColor(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f), RetroFuturaGUI::ColorSetState::Enabled);
+        _members->_testButton->SetBorderColors(testv, RetroFuturaGUI::ColorSetState::Hover);
+        _members->_testButton->SetBorderColors(testv, RetroFuturaGUI::ColorSetState::Clicked);
+
+        _members->_testButton->SetBorderGradientAnimationSpeed(0.0f);
+        _members->_testButton->SetBorderGradientRotationSpeed(0.1f);
+    
+
+    }
+    
     _members->_testGrid->AttachWidget(1, 1, &*_members->_testButton, SizingMode::FIXED);
     _members->_testButton->Connect_OnClick([this]() { on_testButton_clicked(); }, false);
 
