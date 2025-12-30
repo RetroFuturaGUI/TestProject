@@ -30,6 +30,23 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
       _members->_window->SetBackgroundImage(path);
     }
 
+
+    _members->_window->GetWindowBar().SetElementBackgroundColor(glm::vec4(0.5f, 0.0f, 1.0f, 0.65f), RetroFuturaGUI::ColorSetState::Enabled, RetroFuturaGUI::WindowBar::ElementType::Title);
+    _members->_window->GetWindowBar().SetElementBackgroundColor(glm::vec4(0.5f, 0.0f, 1.0f, 0.65f), RetroFuturaGUI::ColorSetState::Enabled, RetroFuturaGUI::WindowBar::ElementType::Title);
+	_members->_window->GetWindowBar().SetElementBackgroundColor(glm::vec4(1.0f, 0.1f, 0.1f, 0.65f), RetroFuturaGUI::ColorSetState::Enabled, RetroFuturaGUI::WindowBar::ElementType::CloseButton);
+	_members->_window->GetWindowBar().SetElementBackgroundColor(glm::vec4(1.0f, 0.2f, 0.2f, 0.65f), RetroFuturaGUI::ColorSetState::Hover, RetroFuturaGUI::WindowBar::ElementType::CloseButton);
+	_members->_window->GetWindowBar().SetElementBackgroundColor(glm::vec4(1.0f, 0.3f, 0.3f, 0.75f), RetroFuturaGUI::ColorSetState::Clicked, RetroFuturaGUI::WindowBar::ElementType::CloseButton);
+	_members->_window->GetWindowBar().SetElementBackgroundColor(glm::vec4(0.5f, 0.5f, 0.5f, 0.75f), RetroFuturaGUI::ColorSetState::Enabled, RetroFuturaGUI::WindowBar::ElementType::MaximizeButton);
+	_members->_window->GetWindowBar().SetElementBackgroundColor(glm::vec4(0.7f, 0.7f, 0.7f, 0.75f), RetroFuturaGUI::ColorSetState::Hover, RetroFuturaGUI::WindowBar::ElementType::MaximizeButton);
+	_members->_window->GetWindowBar().SetElementBackgroundColor(glm::vec4(0.8f, 0.8f, 0.8f, 0.85f), RetroFuturaGUI::ColorSetState::Clicked, RetroFuturaGUI::WindowBar::ElementType::MaximizeButton);
+	_members->_window->GetWindowBar().SetElementBackgroundColor(glm::vec4(0.5f, 0.5f, 0.5f, 0.75f), RetroFuturaGUI::ColorSetState::Enabled, RetroFuturaGUI::WindowBar::ElementType::MinimizeButton);
+	_members->_window->GetWindowBar().SetElementBackgroundColor(glm::vec4(0.7f, 0.7f, 0.7f, 0.75f), RetroFuturaGUI::ColorSetState::Hover, RetroFuturaGUI::WindowBar::ElementType::MinimizeButton);
+	_members->_window->GetWindowBar().SetElementBackgroundColor(glm::vec4(0.8f, 0.8f, 0.8f, 0.85f), RetroFuturaGUI::ColorSetState::Clicked, RetroFuturaGUI::WindowBar::ElementType::MinimizeButton);
+	_members->_window->GetWindowBar().SetButtonCornerRadii(glm::vec4(10.0f), RetroFuturaGUI::WindowBar::ElementType::CloseButton);
+	_members->_window->GetWindowBar().SetButtonCornerRadii(glm::vec4(10.0f), RetroFuturaGUI::WindowBar::ElementType::MaximizeButton);
+	_members->_window->GetWindowBar().SetButtonCornerRadii(glm::vec4(10.0f), RetroFuturaGUI::WindowBar::ElementType::MinimizeButton);
+
+
     IdentityParams identityGrid = { "testGrid", this, WidgetTypeID::Grid2d, window };
 	GeometryParams2D geometryGrid = { projection, glm::vec2(0.0f, 0.0f), resolution, 0.0f };
 	RetroFuturaGUI::Grid2dAxisDefinition axisDefinition = 
@@ -82,6 +99,8 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
     
     _members->_testGrid->AttachWidget(1, 1, &*_members->_testButton, SizingMode::FIXED);
     _members->_testButton->Connect_OnClick([this]() { on_testButton_clicked(); }, false);
+
+    //_members->_testButton->SetRotation(45.0f);
 
     _members->_window->SetGrid(&*_members->_testGrid);
 }

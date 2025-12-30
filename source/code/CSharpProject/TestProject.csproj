@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Platforms>x64</Platforms>
+  </PropertyGroup>
+
+  <!-- Optional: Copy the C++ DLL to the output directory -->
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy /Y &quot;$(SolutionDir)..\build\bin\$(Configuration)\TestProjectNative.dll&quot; &quot;$(TargetDir)&quot;" Condition="Exists('$(SolutionDir)..\build\bin\$(Configuration)\TestProjectNative.dll')" />
+  </Target>
+
+</Project>
