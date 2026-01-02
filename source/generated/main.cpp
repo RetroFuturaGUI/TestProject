@@ -8,11 +8,7 @@
 
 #ifndef DYNLIB_MODE
 
-#ifdef _WIN32
-#define EXPORT_API __declspec(dllexport)
-#else
-#define EXPORT_API __attribute__((visibility("default")))
-#endif
+#include "WidgetIdManager.hpp"
 
 static std::unique_ptr<TestProject::MainWindow> mainWindowTest;
 
@@ -32,6 +28,11 @@ extern "C" EXPORT_API void Draw()
 	}
 
 	RetroFuturaGUI::GlfwTerminate();
+}
+
+extern "C" EXPORT_API void ConnectSlot(const char* id, RetroFuturaGUI::CallbackType callback, const i32 action, const bool async)
+{
+	RetroFuturaGUI::WidgetIdManager::ConnectSlot(id, callback, action, async);
 }
 
 #else

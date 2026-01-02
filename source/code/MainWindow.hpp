@@ -25,10 +25,13 @@ namespace TestProject
 
     private:
     //private slots
+
+#ifdef DYNLIB_MODE
         void on_testButton_clicked()
         {
             std::println("testButton Clicked!");
         }
+#endif
 
         std::unique_ptr<MainWindow_p> _members;
         void setup(std::string_view windowTitle, const i32 width, const i32 height);

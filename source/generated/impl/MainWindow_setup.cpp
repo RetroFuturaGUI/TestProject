@@ -1,6 +1,12 @@
 #include "MainWindow.hpp"
 #include "PlatformBridge.hpp"
 
+#ifndef DYNLIB_MODE
+
+#include "WidgetIdManager.hpp"
+
+#endif
+
 void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 width, const i32 height)
 {
     bool frutiger = false;
@@ -56,8 +62,8 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
 	};
 
 	_members->_testGrid = std::make_unique<RetroFuturaGUI::Grid2d>(identityGrid, geometryGrid, axisDefinition);
-
-    IdentityParams identityB = { "testButton", this, WidgetTypeID::Window, window };
+std::string tempID = _members->_name +  "/testButton";
+    IdentityParams identityB = { tempID, this, WidgetTypeID::Window, window };
 	GeometryParams2D geometryB = { projection, glm::vec2(0.0f, 0.0f), glm::vec2(300.0f, 90.0f), 0.0f };
 	RetroFuturaGUI::TextParams textParamsB = { "Test Button", fontPath, glm::vec4(1.0f), glm::vec2(30.0f), RetroFuturaGUI::TextAlignment::CENTER, 5.0f };
 	RetroFuturaGUI::BorderParams borderParams = { glm::vec4(0.3f, 0.3f, 0.3f, 1.0f), 5.0f };
@@ -98,8 +104,14 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
     }
     
     _members->_testGrid->AttachWidget(1, 1, &*_members->_testButton, SizingMode::FIXED);
-    _members->_testButton->Connect_OnClick([this]() { on_testButton_clicked(); }, false);
 
+#ifndef DYNLIB_MODE
+    RetroFuturaGUI::WidgetIdManager::AddWidget(_members->_testButton->GetName(), &*_members->_testButton);
+#else
+    _members->_testButton->Connect_OnClick([this]() { on_testButton_clicked(); }, false);
+#endif
+
+std::println("setup ID: {}", _members->_testButton->GetName());
     //_members->_testButton->SetRotation(45.0f);
 
     _members->_window->SetGrid(&*_members->_testGrid);

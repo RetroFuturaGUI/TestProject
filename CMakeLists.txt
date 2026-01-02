@@ -39,7 +39,6 @@ target_link_libraries("TestProject" PRIVATE
     "RetroFuturaGUI"
 )
 
-# Post-build commands (adjust if needed for DLL)
 add_custom_command(TARGET "TestProject" POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_CURRENT_SOURCE_DIR}/RetroFuturaGUI/source/Shaders/ShaderSource"
