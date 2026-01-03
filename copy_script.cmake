@@ -1,0 +1,7 @@
+file(GLOB_RECURSE files_to_copy "${SOURCE_DIR}/*")
+foreach(file ${files_to_copy})
+    file(RELATIVE_PATH rel_path "${SOURCE_DIR}" "${file}")
+    get_filename_component(dest_path "${DEST_DIR}/${rel_path}" DIRECTORY)
+    file(MAKE_DIRECTORY "${dest_path}")
+    file(COPY "${file}" DESTINATION "${dest_path}")
+endforeach()

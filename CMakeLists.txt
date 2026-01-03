@@ -12,7 +12,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/RetroFuturaGUI")
 
-# Check if DYNLIB_MODE is set
 if(DYNLIB_MODE)
     message(STATUS "Building as a shared library (DLL)")
     add_library(TestProject SHARED
@@ -57,16 +56,24 @@ if(DYNLIB_MODE)
         WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/source/code/CSharpProject"
         COMMENT "Building C# project after DLL..."
     )
+
+    add_custom_command(TARGET TestProject POST_BUILD
+        COMMAND ${CMAKE_COMMAND}
+                -DSOURCE_DIR="${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}"
+                -DDEST_DIR="${CMAKE_CURRENT_SOURCE_DIR}/source/code/CSharpProject/bin/${CMAKE_BUILD_TYPE}/net8.0"
+                -P "${CMAKE_CURRENT_SOURCE_DIR}/copy_script.cmake"
+        COMMENT "Copying build output (including subfolders) to working directory..."
+    )
 endif()
 
 
 #exe mode:
-#run cmake (DEBUG):   & "C:\Program Files\CMake\bin\cmake.exe" .. CMakeLists.txt -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DBUILDTYPE=Debug   -B x64-windows
-#run cmake (RELEASE): & "C:\Program Files\CMake\bin\cmake.exe" .. CMakeLists.txt -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DBUILDTYPE=Release -B x64-windows
+#run cmake (DEBUG):   & "C:\Program Files\CMake\bin\cmake.exe" .. CMakeLists.txt -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Debug   -B x64-windows
+#run cmake (RELEASE): & "C:\Program Files\CMake\bin\cmake.exe" .. CMakeLists.txt -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Release -B x64-windows
 #build: & "C:\Program Files\CMake\bin\cmake.exe" --build x64-windows
 #run: x64-windows/Debug/TestProject.exe
 
 #dll mode
-#run cmake (DEBUG):   & "C:\Program Files\CMake\bin\cmake.exe" .. CMakeLists.txt -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DBUILDTYPE=Debug   -DDYNLIN=true -B x64-windows
-#run cmake (RELEASE): & "C:\Program Files\CMake\bin\cmake.exe" .. CMakeLists.txt -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DBUILDTYPE=Release -DDYNLIN=true -B x64-windows
+#run cmake (DEBUG):   & "C:\Program Files\CMake\bin\cmake.exe" .. CMakeLists.txt -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Debug   -DDYNLIN=true -B x64-windows
+#run cmake (RELEASE): & "C:\Program Files\CMake\bin\cmake.exe" .. CMakeLists.txt -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Release -DDYNLIN=true -B x64-windows
 #build: & "C:\Program Files\CMake\bin\cmake.exe" --build x64-windows
