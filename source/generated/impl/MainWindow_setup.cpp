@@ -3,7 +3,7 @@
 
 #ifndef DYNLIB_MODE
 
-#include "WidgetIdManager.hpp"
+#include "DynamicLibWidgetManager.hpp"
 
 #endif
 
@@ -106,12 +106,11 @@ std::string tempID = _members->_name +  "/testButton";
     _members->_testGrid->AttachWidget(1, 1, &*_members->_testButton, SizingMode::FIXED);
 
 #ifndef DYNLIB_MODE
-    RetroFuturaGUI::WidgetIdManager::AddWidget(_members->_testButton->GetName(), &*_members->_testButton);
+    RetroFuturaGUI::DynamicLibWidgetManager::AddWidget(_members->_testButton->GetName(), &*_members->_testButton);
 #else
     _members->_testButton->Connect_OnClick([this]() { on_testButton_clicked(); }, false);
 #endif
 
-std::println("setup ID: {}", _members->_testButton->GetName());
     //_members->_testButton->SetRotation(45.0f);
 
     _members->_window->SetGrid(&*_members->_testGrid);

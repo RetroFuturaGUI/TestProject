@@ -8,7 +8,7 @@
 
 #ifndef DYNLIB_MODE
 
-#include "WidgetIdManager.hpp"
+#include "DynamicLibWidgetManager.hpp"
 
 static std::unique_ptr<TestProject::MainWindow> mainWindowTest;
 
@@ -32,7 +32,12 @@ extern "C" EXPORT_API void Draw()
 
 extern "C" EXPORT_API void ConnectSlot(const char* id, RetroFuturaGUI::CallbackType callback, const i32 action, const bool async)
 {
-	RetroFuturaGUI::WidgetIdManager::ConnectSlot(id, callback, action, async);
+	RetroFuturaGUI::DynamicLibWidgetManager::ConnectSlot(id, callback, action, async);
+}
+
+extern "C" EXPORT_API void DisonnectSlot(const char* id, RetroFuturaGUI::CallbackType callback, const i32 action)
+{
+	RetroFuturaGUI::DynamicLibWidgetManager::DisconnectSlot(id, callback, action);
 }
 
 #else

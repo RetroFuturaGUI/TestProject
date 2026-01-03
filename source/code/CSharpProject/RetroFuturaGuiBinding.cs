@@ -30,4 +30,11 @@ public class RetroFuturaGuiBinding
         int action,
         bool async
     );
+
+    [DllImport(dllName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void DisconnectSlot(
+        [MarshalAs(UnmanagedType.LPStr)] string id,
+        Callback callback,
+        int action
+    );
 };
