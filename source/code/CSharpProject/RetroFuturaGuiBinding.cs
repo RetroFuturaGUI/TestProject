@@ -37,4 +37,10 @@ public class RetroFuturaGuiBinding
         Callback callback,
         int action
     );
+
+    [DllImport(dllName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void SetRotation(
+        [MarshalAs(UnmanagedType.LPStr)] string id,
+        float degree
+    );
 };

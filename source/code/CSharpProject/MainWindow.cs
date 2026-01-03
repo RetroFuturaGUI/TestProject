@@ -10,5 +10,6 @@ public partial class MainWindow
     private static void onButtonClick()
     {
         Console.WriteLine("Hello from C#!");
+        RetroFuturaGuiBinding.SetRotation("MainWindow/testButton", 45.0f);
     }
 };

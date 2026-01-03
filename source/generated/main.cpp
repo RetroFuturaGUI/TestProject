@@ -40,6 +40,11 @@ extern "C" EXPORT_API void DisonnectSlot(const char* id, RetroFuturaGUI::Callbac
 	RetroFuturaGUI::DynamicLibWidgetManager::DisconnectSlot(id, callback, action);
 }
 
+extern "C" EXPORT_API void SetRotation(const char* id, f32 degree)
+{
+	RetroFuturaGUI::DynamicLibWidgetManager::SetRotation(id, degree);
+}
+
 #else
 
 i32 main()
