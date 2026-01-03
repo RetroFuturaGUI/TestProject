@@ -10,6 +10,12 @@ project("TestProject" VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+if(MSVC)
+    add_compile_options(/W4 /WX)
+else()
+    add_compile_options(-Wall -Wextra -Werror -Wreturn-type)
+endif()
+
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/RetroFuturaGUI")
 
 if(DYNLIB_MODE)
