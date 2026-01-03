@@ -45,6 +45,11 @@ extern "C" EXPORT_API void SetRotation(const char* id, f32 degree)
 	RetroFuturaGUI::DynamicLibWidgetManager::SetRotation(id, degree);
 }
 
+extern "C" EXPORT_API void SetSize(const char* id, f32 width, f32 height)
+{
+	RetroFuturaGUI::DynamicLibWidgetManager::SetSize(id, width, height);
+}
+
 #else
 
 i32 main()

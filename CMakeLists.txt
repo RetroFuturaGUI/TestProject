@@ -13,7 +13,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 if(MSVC)
     add_compile_options(/W4 /WX)
 else()
-    add_compile_options(-Wall -Wextra -Werror -Wreturn-type)
+    add_compile_options(-Wall -Wextra -Werror -Wreturn-type -Wunused-includes)
 endif()
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/RetroFuturaGUI")

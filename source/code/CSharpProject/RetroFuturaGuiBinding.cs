@@ -43,4 +43,11 @@ public class RetroFuturaGuiBinding
         [MarshalAs(UnmanagedType.LPStr)] string id,
         float degree
     );
+
+    [DllImport(dllName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void SetSize(
+        [MarshalAs(UnmanagedType.LPStr)] string id,
+        float width,
+        float height
+    );
 };

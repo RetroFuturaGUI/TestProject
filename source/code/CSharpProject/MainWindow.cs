@@ -11,5 +11,6 @@ public partial class MainWindow
     {
         Console.WriteLine("Hello from C#!");
         RetroFuturaGuiBinding.SetRotation("MainWindow/testButton", 45.0f);
+        RetroFuturaGuiBinding.SetSize("MainWindow/testButton", 400.0f, 300.0f);
     }
 };
