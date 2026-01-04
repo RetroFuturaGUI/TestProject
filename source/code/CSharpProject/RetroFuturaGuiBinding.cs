@@ -13,6 +13,14 @@ public class RetroFuturaGuiBinding
         Unknown = -1
     };   
 
+    public enum ColorSetState : UInt32
+    {
+        Enabled,
+        Disabled,
+        Clicked,
+        Hover
+    };
+
     public delegate void Callback();
 
     const string dllName = "TestProjectNative";
@@ -49,5 +57,14 @@ public class RetroFuturaGuiBinding
         [MarshalAs(UnmanagedType.LPStr)] string id,
         float width,
         float height
+    );
+
+    
+    [DllImport(dllName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void SetBackgroundColors(
+        [MarshalAs(UnmanagedType.LPStr)] string id,
+        IntPtr colors,
+        UInt32 colorCount,
+        UInt32 colorSetState
     );
 };

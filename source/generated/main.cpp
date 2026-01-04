@@ -50,6 +50,12 @@ extern "C" EXPORT_API void SetSize(const char* id, f32 width, f32 height)
 	RetroFuturaGUI::DynamicLibWidgetManager::SetSize(id, width, height);
 }
 
+extern "C" EXPORT_API void SetBackgroundColors(const char* id, f32* colors, u32 colorCount, u32 colorSetState)
+{
+	std::span<glm::vec4> col(reinterpret_cast<glm::vec4*>(colors), colorCount);
+	RetroFuturaGUI::DynamicLibWidgetManager::SetBackgroundColors(id, col, static_cast<RetroFuturaGUI::ColorSetState>(colorSetState));
+}
+
 #else
 
 i32 main()
