@@ -141,4 +141,12 @@ public class RetroFuturaGuiBinding
         [MarshalAs(UnmanagedType.LPStr)] string id,
         bool enable
     );
+
+    [DllImport(dllName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void SetTextColors(
+        [MarshalAs(UnmanagedType.LPStr)] string id,
+        IntPtr colors,
+        UInt32 colorCount,
+        UInt32 colorState
+    );
 };

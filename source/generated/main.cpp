@@ -118,6 +118,12 @@ extern "C" EXPORT_API void SetEnabled(const char* id, bool enabled)
 	RetroFuturaGUI::DynamicLibWidgetManager::SetEnabled(id, enabled);
 }
 
+extern "C" EXPORT_API void SetTextColors(const char* id, f32* colors, u32 colorCount, RetroFuturaGUI::ColorState colorState)
+{
+	std::span<glm::vec4> col(reinterpret_cast<glm::vec4*>(colors), colorCount);
+	RetroFuturaGUI::DynamicLibWidgetManager::SetTextColors(id, col, colorState);
+}
+
 #else
 
 i32 main()
