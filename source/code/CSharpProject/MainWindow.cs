@@ -23,7 +23,7 @@ public partial class MainWindow
         try
         {
             IntPtr ptr = handle.AddrOfPinnedObject();
-            RetroFuturaGuiBinding.SetBorderColors("MainWindow/testButton", ptr, (uint)colors.Length / 4, (UInt32)RetroFuturaGuiBinding.ColorSetState.Enabled);
+            RetroFuturaGuiBinding.SetBorderColors("MainWindow/testButton", ptr, (uint)colors.Length / 4, (UInt32)RetroFuturaGuiBinding.ColorState.Enabled);
         }
         finally
         {

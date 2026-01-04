@@ -51,16 +51,16 @@ extern "C" EXPORT_API void SetSize(const char* id, f32 width, f32 height)
 	RetroFuturaGUI::DynamicLibWidgetManager::SetSize(id, width, height);
 }
 
-extern "C" EXPORT_API void SetBackgroundColors(const char* id, f32* colors, u32 colorCount, RetroFuturaGUI::ColorSetState colorSetState)
+extern "C" EXPORT_API void SetBackgroundColors(const char* id, f32* colors, u32 colorCount, RetroFuturaGUI::ColorState colorState)
 {
 	std::span<glm::vec4> col(reinterpret_cast<glm::vec4*>(colors), colorCount);
-	RetroFuturaGUI::DynamicLibWidgetManager::SetBackgroundColors(id, col, colorSetState);
+	RetroFuturaGUI::DynamicLibWidgetManager::SetBackgroundColors(id, col, colorState);
 }
 
-extern "C" EXPORT_API void SetBorderColors(const char* id, f32* colors, u32 colorCount, RetroFuturaGUI::ColorSetState colorSetState)
+extern "C" EXPORT_API void SetBorderColors(const char* id, f32* colors, u32 colorCount, RetroFuturaGUI::ColorState colorState)
 {
 	std::span<glm::vec4> col(reinterpret_cast<glm::vec4*>(colors), colorCount);
-	RetroFuturaGUI::DynamicLibWidgetManager::SetBorderColors(id, col, colorSetState);
+	RetroFuturaGUI::DynamicLibWidgetManager::SetBorderColors(id, col, colorState);
 }
 
 #else

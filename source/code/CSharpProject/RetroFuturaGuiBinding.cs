@@ -13,7 +13,7 @@ public class RetroFuturaGuiBinding
         Unknown = -1
     };   
 
-    public enum ColorSetState : UInt32
+    public enum ColorState : UInt32
     {
         Enabled,
         Disabled,
@@ -64,7 +64,7 @@ public class RetroFuturaGuiBinding
         [MarshalAs(UnmanagedType.LPStr)] string id,
         IntPtr colors,
         UInt32 colorCount,
-        UInt32 colorSetState
+        UInt32 colorState
     );
 
     [DllImport(dllName, CallingConvention = CallingConvention.Cdecl)]
@@ -72,6 +72,6 @@ public class RetroFuturaGuiBinding
         [MarshalAs(UnmanagedType.LPStr)] string id,
         IntPtr colors,
         UInt32 colorCount,
-        UInt32 colorSetState
+        UInt32 colorState
     );
 };
