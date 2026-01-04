@@ -113,6 +113,11 @@ extern "C" EXPORT_API void SetWindowBorderImageTextureID(const char* id, u32 tex
 	RetroFuturaGUI::DynamicLibWidgetManager::SetWindowBorderImageTextureID(id, textureID);
 }
 
+extern "C" EXPORT_API void SetEnabled(const char* id, bool enabled)
+{
+	RetroFuturaGUI::DynamicLibWidgetManager::SetEnabled(id, enabled);
+}
+
 #else
 
 i32 main()

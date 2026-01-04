@@ -135,4 +135,10 @@ public class RetroFuturaGuiBinding
         [MarshalAs(UnmanagedType.LPStr)] string id,
         UInt32 textureID
     );
+
+    [DllImport(dllName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void SetEnabled(
+        [MarshalAs(UnmanagedType.LPStr)] string id,
+        bool enable
+    );
 };
