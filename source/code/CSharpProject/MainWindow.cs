@@ -16,14 +16,14 @@ public partial class MainWindow
     private static void onButtonClick()
     {
         Console.WriteLine("Hello from C#!");
-        RetroFuturaGuiBinding.SetRotation("MainWindow/testButton", 45.0f);
-        RetroFuturaGuiBinding.SetSize("MainWindow/testButton", 400.0f, 300.0f);
+        //RetroFuturaGuiBinding.SetRotation("MainWindow/testButton", 45.0f);
+        //RetroFuturaGuiBinding.SetSize("MainWindow/testButton", 400.0f, 300.0f);
 
         GCHandle handle = GCHandle.Alloc(colors, GCHandleType.Pinned);
         try
         {
             IntPtr ptr = handle.AddrOfPinnedObject();
-            RetroFuturaGuiBinding.SetBackgroundColors("MainWindow/testButton", ptr, 3, (UInt32)RetroFuturaGuiBinding.ColorSetState.Enabled);
+            RetroFuturaGuiBinding.SetBorderColors("MainWindow/testButton", ptr, (uint)colors.Length / 4, (UInt32)RetroFuturaGuiBinding.ColorSetState.Enabled);
         }
         finally
         {

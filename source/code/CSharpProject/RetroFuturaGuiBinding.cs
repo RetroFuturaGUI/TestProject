@@ -67,4 +67,12 @@ public class RetroFuturaGuiBinding
         UInt32 colorCount,
         UInt32 colorSetState
     );
+
+    [DllImport(dllName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void SetBorderColors(
+        [MarshalAs(UnmanagedType.LPStr)] string id,
+        IntPtr colors,
+        UInt32 colorCount,
+        UInt32 colorSetState
+    );
 };

@@ -1,4 +1,5 @@
 #include "MainWindow.hpp"
+#include "IncludeHelper.hpp"
 #include "PlatformBridge.hpp"
 
 #ifndef DYNLIB_MODE
