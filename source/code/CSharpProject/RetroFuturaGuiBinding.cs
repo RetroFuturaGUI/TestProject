@@ -59,7 +59,6 @@ public class RetroFuturaGuiBinding
         float height
     );
 
-    
     [DllImport(dllName, CallingConvention = CallingConvention.Cdecl)]
     public static extern void SetBackgroundColors(
         [MarshalAs(UnmanagedType.LPStr)] string id,

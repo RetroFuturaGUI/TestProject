@@ -54,8 +54,8 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
 	_members->_window->GetWindowBar().SetButtonCornerRadii(glm::vec4(10.0f), RetroFuturaGUI::WindowBar::ElementType::MinimizeButton);
 
 
-    IdentityParams identityGrid = { "testGrid", this, WidgetTypeID::Grid2d, window };
-	GeometryParams2D geometryGrid = { projection, glm::vec2(0.0f, 0.0f), resolution, 0.0f };
+    RetroFuturaGUI::IdentityParams identityGrid = { "testGrid", this, RetroFuturaGUI::WidgetTypeID::Grid2d, window };
+	RetroFuturaGUI::GeometryParams2D geometryGrid = { projection, glm::vec2(0.0f, 0.0f), resolution, 0.0f };
 	RetroFuturaGUI::Grid2dAxisDefinition axisDefinition = 
 	{
 		{ 0.3f, 0.5f, 0.2f },
@@ -64,8 +64,8 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
 
 	_members->_testGrid = std::make_unique<RetroFuturaGUI::Grid2d>(identityGrid, geometryGrid, axisDefinition);
 std::string tempID = _members->_name +  "/testButton";
-    IdentityParams identityB = { tempID, this, WidgetTypeID::Window, window };
-	GeometryParams2D geometryB = { projection, glm::vec2(0.0f, 0.0f), glm::vec2(300.0f, 90.0f), 0.0f };
+    RetroFuturaGUI::IdentityParams identityB = { tempID, this, RetroFuturaGUI::WidgetTypeID::Window, window };
+	RetroFuturaGUI::GeometryParams2D geometryB = { projection, glm::vec2(0.0f, 0.0f), glm::vec2(300.0f, 90.0f), 0.0f };
 	RetroFuturaGUI::TextParams textParamsB = { "Test Button", fontPath, glm::vec4(1.0f), glm::vec2(30.0f), RetroFuturaGUI::TextAlignment::CENTER, 5.0f };
 	RetroFuturaGUI::BorderParams borderParams = { glm::vec4(0.3f, 0.3f, 0.3f, 1.0f), 5.0f };
 
@@ -104,7 +104,7 @@ std::string tempID = _members->_name +  "/testButton";
 
     }
     
-    _members->_testGrid->AttachWidget(1, 1, &*_members->_testButton, SizingMode::FIXED);
+    _members->_testGrid->AttachWidget(1, 1, &*_members->_testButton, RetroFuturaGUI::SizingMode::FIXED);
 
 #ifndef DYNLIB_MODE
     RetroFuturaGUI::DynamicLibWidgetManager::AddWidget(_members->_testButton->GetName(), &*_members->_testButton);
