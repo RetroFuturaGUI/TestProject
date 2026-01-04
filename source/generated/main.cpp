@@ -57,10 +57,60 @@ extern "C" EXPORT_API void SetBackgroundColors(const char* id, f32* colors, u32 
 	RetroFuturaGUI::DynamicLibWidgetManager::SetBackgroundColors(id, col, colorState);
 }
 
+extern "C" EXPORT_API void SetBackgroundGradientOffset(const char* id, f32 gradientOffset)
+{
+	RetroFuturaGUI::DynamicLibWidgetManager::SetBackgroundGradientOffset(id, gradientOffset);
+}
+
+extern "C" EXPORT_API void SetBackgroundGradientAnimationSpeed(const char* id, f32 animationSpeed)
+{
+	RetroFuturaGUI::DynamicLibWidgetManager::SetBackgroundGradientAnimationSpeed(id, animationSpeed);
+}
+
+extern "C" EXPORT_API void SetBackgroundGradientDegree(const char* id, f32 degree)
+{
+	RetroFuturaGUI::DynamicLibWidgetManager::SetBackgroundGradientDegree(id, degree);
+}
+
+extern "C" EXPORT_API void SetBackgroundGradientRotationSpeed(const char* id, f32 rotationSpeed)
+{
+	RetroFuturaGUI::DynamicLibWidgetManager::SetBackgroundGradientRotationSpeed(id, rotationSpeed);
+}
+
+extern "C" EXPORT_API void SetWindowBackgroundImageTextureID(const char* id, u32 textureID)
+{
+	RetroFuturaGUI::DynamicLibWidgetManager::SetWindowBackgroundImageTextureID(id, textureID);
+}
+
 extern "C" EXPORT_API void SetBorderColors(const char* id, f32* colors, u32 colorCount, RetroFuturaGUI::ColorState colorState)
 {
 	std::span<glm::vec4> col(reinterpret_cast<glm::vec4*>(colors), colorCount);
 	RetroFuturaGUI::DynamicLibWidgetManager::SetBorderColors(id, col, colorState);
+}
+
+extern "C" EXPORT_API void SetBorderGradientOffset(const char* id, f32 gradientOffset)
+{
+	RetroFuturaGUI::DynamicLibWidgetManager::SetBorderGradientOffset(id, gradientOffset);
+}
+
+extern "C" EXPORT_API void SetBorderGradientAnimationSpeed(const char* id, f32 animationSpeed)
+{
+	RetroFuturaGUI::DynamicLibWidgetManager::SetBorderGradientAnimationSpeed(id, animationSpeed);
+}
+
+extern "C" EXPORT_API void SetBorderGradientDegree(const char* id, f32 degree)
+{
+	RetroFuturaGUI::DynamicLibWidgetManager::SetBorderGradientDegree(id, degree);
+}
+
+extern "C" EXPORT_API void SetBorderGradientRotationSpeed(const char* id, f32 rotationSpeed)
+{
+	RetroFuturaGUI::DynamicLibWidgetManager::SetBorderGradientRotationSpeed(id, rotationSpeed);
+}
+
+extern "C" EXPORT_API void SetWindowBorderImageTextureID(const char* id, u32 textureID)
+{
+	RetroFuturaGUI::DynamicLibWidgetManager::SetWindowBorderImageTextureID(id, textureID);
 }
 
 #else

@@ -67,11 +67,72 @@ public class RetroFuturaGuiBinding
         UInt32 colorState
     );
 
+
+    [DllImport(dllName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void SetBackgroundGradientOffset(
+        [MarshalAs(UnmanagedType.LPStr)] string id,
+        float gradientOffset
+    );
+
+    [DllImport(dllName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void SetBackgroundGradientAnimationSpeed(
+        [MarshalAs(UnmanagedType.LPStr)] string id,
+        float animationSpeed
+    );
+
+    [DllImport(dllName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void SetBackgroundGradientDegree(
+        [MarshalAs(UnmanagedType.LPStr)] string id,
+        float degree
+    );
+
+    [DllImport(dllName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void SetBackgroundGradientRotationSpeed(
+        [MarshalAs(UnmanagedType.LPStr)] string id,
+        float rotationSpeed
+    );
+
+    [DllImport(dllName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void SetWindowBackgroundImageTextureID(
+        [MarshalAs(UnmanagedType.LPStr)] string id,
+        UInt32 textureID
+    );
+
     [DllImport(dllName, CallingConvention = CallingConvention.Cdecl)]
     public static extern void SetBorderColors(
         [MarshalAs(UnmanagedType.LPStr)] string id,
         IntPtr colors,
         UInt32 colorCount,
         UInt32 colorState
+    );
+
+    [DllImport(dllName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void SetBorderGradientOffset(
+        [MarshalAs(UnmanagedType.LPStr)] string id,
+        float gradientOffset
+    );
+    
+    [DllImport(dllName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void SetBorderGradientAnimationSpeed(
+        [MarshalAs(UnmanagedType.LPStr)] string id,
+        float animationSpeed
+    );
+
+    [DllImport(dllName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void SetBorderGradientDegree(
+        [MarshalAs(UnmanagedType.LPStr)] string id,
+        float degree
+    );
+
+    [DllImport(dllName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void SetBorderGradientRotationSpeed(
+        [MarshalAs(UnmanagedType.LPStr)] string id,
+        float rotationSpeed
+    );
+
+    [DllImport(dllName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void SetWindowBorderImageTextureID(
+        [MarshalAs(UnmanagedType.LPStr)] string id,
+        UInt32 textureID
     );
 };

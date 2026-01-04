@@ -67,7 +67,6 @@ std::string tempID = _members->_name +  "/testButton";
     RetroFuturaGUI::IdentityParams identityB = { tempID, this, RetroFuturaGUI::WidgetTypeID::Window, window };
 	RetroFuturaGUI::GeometryParams2D geometryB = { projection, glm::vec2(0.0f, 0.0f), glm::vec2(300.0f, 90.0f), 0.0f };
 	RetroFuturaGUI::TextParams textParamsB = { "Test Button", fontPath, glm::vec4(1.0f), glm::vec2(30.0f), RetroFuturaGUI::TextAlignment::CENTER, 5.0f };
-	RetroFuturaGUI::BorderParams borderParams = { glm::vec4(0.3f, 0.3f, 0.3f, 1.0f), 5.0f };
 
 
 	_members->_testButton = std::make_unique<RetroFuturaGUI::Button>(identityB, geometryB, textParamsB, 5.0f);
