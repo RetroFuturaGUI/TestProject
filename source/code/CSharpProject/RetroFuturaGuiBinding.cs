@@ -26,6 +26,11 @@ public class RetroFuturaGuiBinding
     const string dllName = "TestProjectNative";
 
     [DllImport(dllName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void SetWorkingDirectory(
+        [MarshalAs(UnmanagedType.LPStr)] string dir
+    );
+
+    [DllImport(dllName, CallingConvention = CallingConvention.Cdecl)]
     public static extern void InitRetroFuturaGUI();
 
     [DllImport(dllName, CallingConvention = CallingConvention.Cdecl)]

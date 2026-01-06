@@ -2,7 +2,7 @@
 #include "IncludeHelper.hpp"
 #include "PlatformBridge.hpp"
 
-#ifndef DYNLIB_MODE
+#ifdef DYNLIB_MODE
 
 #include "DynamicLibWidgetManager.hpp"
 
@@ -105,7 +105,7 @@ std::string tempID = _members->_name +  "/testButton";
     
     _members->_testGrid->AttachWidget(1, 1, &*_members->_testButton, RetroFuturaGUI::SizingMode::FIXED);
 
-#ifndef DYNLIB_MODE
+#ifdef DYNLIB_MODE
     RetroFuturaGUI::DynamicLibWidgetManager::AddWidget(_members->_testButton->GetName(), &*_members->_testButton);
 #else
     _members->_testButton->Connect_OnClick([this]() { on_testButton_clicked(); }, false);

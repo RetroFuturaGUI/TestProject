@@ -7,11 +7,16 @@
 #include "RetroFuturaGuiInit.hpp"
 #include "MainWindow.hpp"
 
-#ifndef DYNLIB_MODE
+#ifdef DYNLIB_MODE
 
 #include "DynamicLibWidgetManager.hpp"
 
 static std::unique_ptr<TestProject::MainWindow> mainWindowTest;
+
+extern "C" EXPORT_API void SetWorkingDirectory(const char* dir)
+{
+    PlatformBridge::Paths::SetWorkingDir(dir);
+}
 
 extern "C" EXPORT_API void InitRetroFuturaGUI()
 {
@@ -129,6 +134,16 @@ extern "C" EXPORT_API void SetTextColors(const char* id, f32* colors, u32 colorC
 i32 main()
 {
 	PlatformBridge::RefreshPlatformBridge();
+	std::string exePath = PlatformBridge::Paths::GetExecutablePath();
+
+#ifdef _WIN32
+    exePath = exePath.substr(0, exePath.find_last_of(R"(\)"));
+#else
+    exePath = exePath.substr(0, exePath.find_last_of(R"(/)"));
+#endif
+
+	PlatformBridge::Paths::SetWorkingDir(exePath.c_str());
+
 	RetroFuturaGUI::GlfwInit();
 
 	TestProject::MainWindow mainWindowTest("RetroFuturaGUI Test", 1280, 720);

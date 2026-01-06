@@ -2,4 +2,6 @@ CMakeFiles/
 build/
 source/code/CSharpProject/bin
 source/code/CSharpProject/obj
+source/code/Python/*
+!source/code/Python/*.py
 #source/generated/
