@@ -61,6 +61,13 @@ add_custom_command(TARGET "TestProject" POST_BUILD
 )
 
 if(LANG MATCHES "CSharp")
+    add_custom_command(TARGET TestProject
+        COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_CURRENT_SOURCE_DIR}/RetroFuturaGUI/Resources/Bindings/RetroFuturaGuiBinding.cs"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/code/CSharpProject/RetroFuturaGuiBinding.cs"
+        COMMENT "Copying binding file"
+    )
+
     add_custom_command(TARGET TestProject POST_BUILD
         COMMAND dotnet build "${CMAKE_CURRENT_SOURCE_DIR}/source/code/CSharpProject/TestProject.csproj" --configuration Debug
         WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/source/code/CSharpProject"
@@ -81,6 +88,10 @@ elseif(LANG MATCHES "Python")
                 -DDEST_DIR="${CMAKE_CURRENT_SOURCE_DIR}/source/code/Python"
                 -P "${CMAKE_CURRENT_SOURCE_DIR}/copy_script.cmake"
         COMMENT "Copying build output (including subfolders) to Python directory..."
+
+        COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_CURRENT_SOURCE_DIR}/RetroFuturaGUI/Resources/Bindings/RetroFuturaGuiBinding.py"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/code/Python/RetroFuturaGuiBinding.py"
     )
 endif()
 
