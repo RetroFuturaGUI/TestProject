@@ -32,7 +32,12 @@ endif()
 if(MSVC)
     add_compile_options(/W4 /WX)
 else()
-    add_compile_options(-Wall -Wextra -Werror -Wreturn-type -Wunused-includes)
+    # GCC doesn't support -Wunused-includes; only enable when using Clang
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        add_compile_options(-Wall -Wextra -Werror -Wreturn-type -Wunused-includes)
+    else()
+        add_compile_options(-Wall -Wextra -Werror -Wreturn-type)
+    endif()
 endif()
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/RetroFuturaGUI")
