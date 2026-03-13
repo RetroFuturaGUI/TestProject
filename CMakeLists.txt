@@ -6,6 +6,8 @@ message(STATUS "CMAKE_TOOLCHAIN_FILE: ${CMAKE_TOOLCHAIN_FILE}")
 
 project("TestProject" VERSION 0.1.0)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
@@ -101,13 +103,19 @@ elseif(LANG MATCHES "Python")
 endif()
 
 
-#exe mode:
-#run cmake (DEBUG):   & "C:\Program Files\CMake\bin\cmake.exe" .. CMakeLists.txt -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Debug   -B x64-windows/x64-Linux
+#exe mode Windows:
+#run cmake (DEBUG):   & "C:\Program Files\CMake\bin\cmake.exe" .. CMakeLists.txt -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Debug   -B x64-windows
 #run cmake (RELEASE): & "C:\Program Files\CMake\bin\cmake.exe" .. CMakeLists.txt -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Release -B x64-windows
 #build: & "C:\Program Files\CMake\bin\cmake.exe" --build x64-windows
 #run: x64-windows/Debug/TestProject.exe
 
-#dll mode
+#exe mode Linux:
+#run cmake (DEBUG):   cmake .. CMakeLists.txt -DTARGETPLATFORM=x64-Linux -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Debug   -B x64-Linux
+#run cmake (RELEASE): cmake .. CMakeLists.txt -DTARGETPLATFORM=x64-Linux -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Release -B x64-Linux
+#build: cmake --build x64-Linux
+#run: ./x64-Linux/TestProject
+
+#dll mode Windows:
 #run cmake (DEBUG):   & "C:\Program Files\CMake\bin\cmake.exe" .. CMakeLists.txt -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Debug   -DLANG=<LANG> -B x64-windows
 #run cmake (RELEASE): & "C:\Program Files\CMake\bin\cmake.exe" .. CMakeLists.txt -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Release -DLANG=<LANG> -B x64-windows
 #build: & "C:\Program Files\CMake\bin\cmake.exe" --build x64-windows
