@@ -1,7 +1,8 @@
 #pragma once
-#include "Grid2D.hpp"
+#include "Lasagna.hpp"
 #include "Button.hpp"
 #include "Window.hpp"
+#include "TextBox.hpp"
 
 namespace TestProject
 {
@@ -13,7 +14,8 @@ namespace TestProject
 
 
         
-        std::unique_ptr<RetroFuturaGUI::Grid2d> _testGrid;
+        std::unique_ptr<RetroFuturaGUI::Lasagna> _testLasagna;
         std::unique_ptr<RetroFuturaGUI::Button> _testButton;
+        std::unique_ptr<RetroFuturaGUI::TextBox> _testTextBox;
     };
 }

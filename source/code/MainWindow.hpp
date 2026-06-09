@@ -1,6 +1,7 @@
 #pragma once
 #include "Window.hpp"
 #include "MainWindow_p.hpp"
+#define privateSlots private
 
 namespace TestProject
 {
@@ -23,13 +24,17 @@ namespace TestProject
         }
 
 
-    private:
-    //private slots
+    privateSlots:
 
 
         void on_testButton_clicked()
         {
             std::println("testButton Clicked!");
+        }
+
+        void on_testTextBox_textChange()
+        {
+            std::println("testTextBox current Text: {}", _members->_testTextBox->GetText());
         }
 
 

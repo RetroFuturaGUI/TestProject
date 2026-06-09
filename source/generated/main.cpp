@@ -153,6 +153,8 @@ i32 main()
 		mainWindowTest.Draw();
 	}
 
+	PlatformBridge::Keyboard::Stop();
+
 	RetroFuturaGUI::GlfwTerminate();
 	
 	return 0;
