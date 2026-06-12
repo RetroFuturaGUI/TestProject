@@ -1,6 +1,7 @@
 #pragma once
 #include "Lasagna.hpp"
 #include "Button.hpp"
+#include "Label.hpp"
 #include "Window.hpp"
 #include "TextBox.hpp"
 
@@ -16,6 +17,7 @@ namespace TestProject
         
         std::unique_ptr<RetroFuturaGUI::Lasagna> _testLasagna;
         std::unique_ptr<RetroFuturaGUI::Button> _testButton;
+        std::unique_ptr<RetroFuturaGUI::Label> _testLabel;
         std::unique_ptr<RetroFuturaGUI::TextBox> _testTextBox;
     };
 }
