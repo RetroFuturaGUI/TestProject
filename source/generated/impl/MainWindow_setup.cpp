@@ -108,7 +108,7 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
     _members->_testButton->SetCornerRadii(glm::vec4(20.0f));
     _members->_testButton->SetFontFamily("Noto Sans", 25.0f, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Normal);
     _members->_testButton->SetText("ボタン");
-    _members->_testButton->SetTextAlignment(RetroFuturaGUI::TextAlignment::CENTER);
+    _members->_testButton->SetTextAlignment(RetroFuturaGUI::TextAlignment::Center);
     _members->_testButton->SetTextPadding(5.0f);
 
     /*if(frutiger)
@@ -124,9 +124,9 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
     //TextBox
     _members->_testTextBox = std::make_unique<RetroFuturaGUI::TextBox>("TestTextBox", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window);
     _members->_testTextBox->SetPosition(glm::vec3(0.0f, -100.0f, 0.0f));
-    _members->_testTextBox->SetSize(glm::vec3(300.0f, 90.0f, 0.01f));
+    _members->_testTextBox->SetSize(glm::vec3(300.0f, 50.0f, 0.01f));
     _members->_testTextBox->SetRotation(0.0f);
-_members->_testTextBox->SetBackgroundColor(glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), RetroFuturaGUI::ColorState::Enabled);
+    _members->_testTextBox->SetBackgroundColor(glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), RetroFuturaGUI::ColorState::Enabled);
     _members->_testTextBox->SetBackgroundColor(glm::vec4(0.3f, 0.3f, 0.3f, 1.0f), RetroFuturaGUI::ColorState::Hover);
     _members->_testTextBox->SetBackgroundColor(glm::vec4(0.4f, 0.4f, 0.4f, 1.0f), RetroFuturaGUI::ColorState::Clicked);
     _members->_testTextBox->SetBackgroundColor(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f), RetroFuturaGUI::ColorState::Disabled);
@@ -134,7 +134,7 @@ _members->_testTextBox->SetBackgroundColor(glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), Re
 
     std::vector<glm::vec4> testtextv = std::vector<glm::vec4>({{ 0.024f, 0.478f, 0.965f, 1.0f},{ 0.024f, 0.478f, 0.965f, 1.0f} ,  { 0.980f, 0.851f, 0.875f, 1.0f }
         , { 0.965f, 0.761f, 0.965f, 1.0f }, { 0.024f, 0.478f, 0.965f, 1.0f},{ 0.024f, 0.478f, 0.965f, 1.0f} , { 0.718f, 0.976f, 0.992f, 1.0f }, { 0.980f, 0.851f, 0.875f, 1.0f }, { 0.980f, 0.851f, 0.875f, 1.0f }});
-    _members->_testTextBox->SetCornerRadii(glm::vec4(20.0f));
+    _members->_testTextBox->SetCornerRadii(glm::vec4(15.0f));
     _members->_testTextBox->SetBackgroundColor(glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), RetroFuturaGUI::ColorState::Enabled);
     _members->_testTextBox->SetBackgroundColor(glm::vec4(0.3f, 0.3f, 0.3f, 1.0f), RetroFuturaGUI::ColorState::Hover);
     _members->_testTextBox->SetBackgroundColor(glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), RetroFuturaGUI::ColorState::Clicked);
@@ -146,11 +146,15 @@ _members->_testTextBox->SetBackgroundColor(glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), Re
 
     //_members->_testButton->SetBorderGradientAnimationSpeed(0.0005f);
     _members->_testTextBox->SetBorderGradientRotationSpeed(2.5f);
+    _members->_testTextBox->SetBorderWidth(2.0f);
     _members->_testTextBox->SetBorderFillType(RetroFuturaGUI::FillType::HUESTAR_GRADIENT);
     _members->_testTextBox->SetFontFamily("Noto Sans", 25.0f, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Normal);
     _members->_testTextBox->SetText("Test TextBox...ンンン");
-    _members->_testTextBox->SetTextAlignment(RetroFuturaGUI::TextAlignment::LEFT);
+    _members->_testTextBox->SetTextAlignment(RetroFuturaGUI::TextAlignment::Left);
     _members->_testTextBox->SetTextPadding(5.0f);
+    //_members->_testTextBox->SetCaretColors(testtextv);
+    _members->_testTextBox->SetCaretGradientAnimationSpeed(2.5f);
+    _members->_testTextBox->SetCaretFillType(RetroFuturaGUI::FillType::HUESTAR_GRADIENT);
 
 
     //Label
@@ -160,7 +164,7 @@ _members->_testTextBox->SetBackgroundColor(glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), Re
     _members->_testLabel->SetRotation(0.0f);
     _members->_testLabel->SetFontFamily("Noto Sans", 25.0f, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Normal);
     _members->_testLabel->SetText("Test Label");
-    _members->_testLabel->SetTextAlignment(RetroFuturaGUI::TextAlignment::CENTER);
+    _members->_testLabel->SetTextAlignment(RetroFuturaGUI::TextAlignment::Center);
     _members->_testLabel->SetTextColor(glm::vec4(1.0f), RetroFuturaGUI::ColorState::Enabled);
     _members->_testLabel->SetTextPadding(5.0f);
     
@@ -176,6 +180,8 @@ _members->_testTextBox->SetBackgroundColor(glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), Re
 #else
     _members->_testButton->Connect_OnClick([this]() { on_testButton_clicked(); }, false);
     _members->_testTextBox->Connect_OnTextChange([this]() { on_testTextBox_textChange(); }, false);
+    _members->_testTextBox->Connect_OnEnterPressed([this]() { on_testTextBox_enterPressed(); }, false);
+    _members->_testTextBox->Connect_OnEnterReleased([this]() { on_testTextBox_enterReleased(); }, false);
 #endif
 
     //_members->_testButton->SetRotation(45.0f);
