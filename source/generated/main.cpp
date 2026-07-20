@@ -129,6 +129,11 @@ extern "C" EXPORT_API void SetTextColors(const char* id, f32* colors, u32 colorC
 	RetroFuturaGUI::DynamicLibWidgetManager::SetTextColors(id, col, colorState);
 }
 
+extern "C" EXPORT_API void SetText(const char* id, const char* text)
+{
+	RetroFuturaGUI::DynamicLibWidgetManager::SetText(id, text);
+}
+
 #else
 
 i32 main()

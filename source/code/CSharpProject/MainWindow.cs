@@ -17,8 +17,9 @@ static bool enable = false;
 
     private static void onButtonClick()
     {
+        RetroFuturaGuiBinding.SetText("MainWindow/TestLabel", "Hello from C#!");
         Console.WriteLine("Hello from C#!");
-        RetroFuturaGuiBinding.SetRotation("MainWindow/testButton", 45.0f);
+        //RetroFuturaGuiBinding.SetRotation("MainWindow/testButton", 45.0f);
         //RetroFuturaGuiBinding.SetSize("MainWindow/testButton", 400.0f, 300.0f);
         
        /* GCHandle handle = GCHandle.Alloc(colors, GCHandleType.Pinned);

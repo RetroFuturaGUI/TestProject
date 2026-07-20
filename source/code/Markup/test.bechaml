@@ -1,0 +1,8 @@
+<Window
+    id="MainWindow" Width="1280", Height"720">
+    <Window.WindowBar Title="test" Position=Top CloseButton=True MinimizeButton=True MaximizeButton=True>
+        <CloseButton.Colors.Enabled>
+
+    </Window.WindowBar>
+    
+</Window>

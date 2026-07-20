@@ -93,10 +93,10 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
         { 0.01f }
 	};
 
-	_members->_testLasagna = std::make_unique<RetroFuturaGUI::Lasagna>("testLasagne", &projection, nullptr, RetroFuturaGUI::WidgetTypeID::Lasagna, window, &axisDefinition);
+	_members->_testLasagna = std::make_unique<RetroFuturaGUI::Lasagna>(_members->_window->GetName() + "/LestLasagne", &projection, nullptr, RetroFuturaGUI::WidgetTypeID::Lasagna, window, &axisDefinition);
     
     //Button
-    _members->_testButton = std::make_unique<RetroFuturaGUI::Button>("TestButton", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window);
+    _members->_testButton = std::make_unique<RetroFuturaGUI::Button>(_members->_window->GetName() + "/TestButton", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window);
     _members->_testButton->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
     _members->_testButton->SetSize(glm::vec3(300.0f, 90.0f, 0.01f));
     _members->_testButton->SetRotation(0.0f);
@@ -137,7 +137,7 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
 
 
     //TextBox
-    _members->_testTextBox = std::make_unique<RetroFuturaGUI::TextBox>("TestTextBox", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window);
+    _members->_testTextBox = std::make_unique<RetroFuturaGUI::TextBox>(_members->_window->GetName() + "/TestTextBox", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window);
     _members->_testTextBox->SetPosition(glm::vec3(0.0f, -100.0f, 0.0f));
     _members->_testTextBox->SetSize(glm::vec3(300.0f, 50.0f, 0.01f));
     _members->_testTextBox->SetRotation(0.0f);
@@ -177,7 +177,7 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
 
 
     //Label
-    _members->_testLabel = std::make_unique<RetroFuturaGUI::Label>("TestLabel", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window);
+    _members->_testLabel = std::make_unique<RetroFuturaGUI::Label>(_members->_window->GetName() + "/TestLabel", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window);
     _members->_testLabel->SetPosition(glm::vec3(0.0f, -100.0f, 0.0f));
     _members->_testLabel->SetSize(glm::vec3(300.0f, 90.0f, 0.01f));
     _members->_testLabel->SetRotation(0.0f);
@@ -200,6 +200,8 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
 
 #ifdef DYNLIB_MODE
     RetroFuturaGUI::DynamicLibWidgetManager::AddWidget(_members->_testButton->GetName(), &*_members->_testButton);
+    RetroFuturaGUI::DynamicLibWidgetManager::AddWidget(_members->_testLabel->GetName(), &*_members->_testLabel);
+    RetroFuturaGUI::DynamicLibWidgetManager::AddWidget(_members->_testTextBox->GetName(), &*_members->_testTextBox);
 #else
     _members->_testButton->Connect_OnClick([this]() { on_testButton_clicked(); }, false);
     _members->_testTextBox->Connect_OnTextChange([this]() { on_testTextBox_textChange(); }, false);

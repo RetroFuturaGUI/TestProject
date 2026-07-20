@@ -1,6 +1,7 @@
 #pragma once
 #include "Window.hpp"
 #include "MainWindow_p.hpp"
+#include <chrono>
 #define privateSlots private
 
 namespace TestProject
@@ -15,7 +16,25 @@ namespace TestProject
 
         void Draw()
         {
-            _members->_window->Draw();
+            constexpr double targetFrameTime { 1.0 / 60.0 };
+	        auto lastFrameTime = std::chrono::high_resolution_clock::now();
+
+            while(!WindowShouldClose())
+            {
+                auto now = std::chrono::high_resolution_clock::now();
+                std::chrono::duration<double> elapsed = now - lastFrameTime;
+                lastFrameTime = now;
+                _members->_window->Draw();
+
+                std::chrono::duration<double> frameTime =
+                std::chrono::high_resolution_clock::now() - now;
+
+                if (frameTime.count() < targetFrameTime)
+                {
+                    std::this_thread::sleep_for(
+                        std::chrono::duration<double>(targetFrameTime - frameTime.count()));
+                }
+            }
         }
 
         bool WindowShouldClose()
