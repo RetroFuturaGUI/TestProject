@@ -134,7 +134,7 @@ extern "C" EXPORT_API void SetTextColors(const char* id, f32* colors, u32 colorC
 i32 main()
 {
 	PlatformBridge::RefreshPlatformBridge();
-	std::string exePath = PlatformBridge::Paths::GetExecutablePath();
+	std::string exePath { PlatformBridge::Paths::GetExecutablePath() };
 
 #ifdef _WIN32
     exePath = exePath.substr(0, exePath.find_last_of(R"(\)"));
@@ -143,6 +143,9 @@ i32 main()
 #endif
 
 	PlatformBridge::Paths::SetWorkingDir(exePath.c_str());
+	constexpr double targetFrameTime { 1.0 / 60.0 };
+	auto lastFrameTime = std::chrono::high_resolution_clock::now();
+
 
 	RetroFuturaGUI::GlfwInit();
 
@@ -150,7 +153,21 @@ i32 main()
 
 	while(!mainWindowTest.WindowShouldClose())
 	{
+		auto now = std::chrono::high_resolution_clock::now();
+		std::chrono::duration<double> elapsed = now - lastFrameTime;
+		lastFrameTime = now;
+
 		mainWindowTest.Draw();
+
+		
+		std::chrono::duration<double> frameTime =
+			std::chrono::high_resolution_clock::now() - now;
+
+		if (frameTime.count() < targetFrameTime)
+		{
+			std::this_thread::sleep_for(
+				std::chrono::duration<double>(targetFrameTime - frameTime.count()));
+		}
 	}
 
 	PlatformBridge::Input::Stop();
