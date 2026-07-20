@@ -23,12 +23,23 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
     RetroFuturaGUI::Projection& projection = *_members->_window->GetProjection(); 
     glm::vec2 resolution = projection.GetResolution();
     _members->_window->ShowWindowBar(true);
-
+#if defined(TARGET_PLATFORM_LINUX)
     RetroFuturaGUI::FontManager::LoadFont("Noto Sans", 25, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Regular, BasicLatinFirst, BasicLatinLast);
     RetroFuturaGUI::FontManager::ExtendFontset("Noto Sans", "Noto Sans", 25, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Regular, Latin1SupplementFirst, Latin1SupplementLast);
     RetroFuturaGUI::FontManager::ExtendFontset("Noto Sans", "Noto Sans CJK JP", 25, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Regular, HiraganaFirst, HiraganaLast);
     RetroFuturaGUI::FontManager::ExtendFontset("Noto Sans", "Noto Sans CJK JP", 25, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Regular, KatakanaFirst, KatakanaLast);
+#elif defined(TARGET_PLATFORM_WINDOWS)
+    RetroFuturaGUI::FontManager::LoadFont("Yu Mincho", 25, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Regular, BasicLatinFirst, BasicLatinLast);
+    RetroFuturaGUI::FontManager::ExtendFontset("Yu Mincho", "Yu Mincho", 25, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Regular, Latin1SupplementFirst, Latin1SupplementLast);
+    RetroFuturaGUI::FontManager::ExtendFontset("Yu Mincho", "Yu Mincho", 25, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Regular, HiraganaFirst, HiraganaLast);
+    RetroFuturaGUI::FontManager::ExtendFontset("Yu Mincho", "Yu Mincho", 25, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Regular, KatakanaFirst, KatakanaLast);
+#endif
+    
+#if defined(TARGET_PLATFORM_LINUX)
     _members->_window->GetWindowBar().SetWindowTitle(windowTitle, "Noto Sans");
+#elif defined(TARGET_PLATFORM_WINDOWS)
+    _members->_window->GetWindowBar().SetWindowTitle(windowTitle, "Yu Mincho");
+#endif
     _members->_window->GetWindowBar().EnableElement(RetroFuturaGUI::WindowBar::ElementType::CloseButton);
     _members->_window->GetWindowBar().EnableElement(RetroFuturaGUI::WindowBar::ElementType::MaximizeButton);
     _members->_window->GetWindowBar().EnableElement(RetroFuturaGUI::WindowBar::ElementType::MinimizeButton);
@@ -102,11 +113,15 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
     _members->_testButton->SetBorderColors(testv, RetroFuturaGUI::ColorState::Clicked);
 
     //_members->_testButton->SetBorderGradientAnimationSpeed(0.0005f);
-    _members->_testButton->SetBorderGradientRotationSpeed(2.5f);
+    _members->_testButton->SetBorderGradientRotationSpeed(5.0f);
     _members->_testButton->SetBorderFillType(RetroFuturaGUI::FillType::HUESTAR_GRADIENT);
     _members->_testButton->SetBorderWidth(5.0f);
     _members->_testButton->SetCornerRadii(glm::vec4(20.0f));
+#if defined(TARGET_PLATFORM_LINUX)
     _members->_testButton->SetFontFamily("Noto Sans", 25.0f, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Normal);
+#elif defined(TARGET_PLATFORM_WINDOWS)
+    _members->_testButton->SetFontFamily("Yu Mincho", 25.0f, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Normal);
+#endif
     _members->_testButton->SetText("ボタン");
     _members->_testButton->SetTextAlignment(RetroFuturaGUI::TextAlignment::Center);
     _members->_testButton->SetTextPadding(5.0f);
@@ -145,15 +160,19 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
 
 
     //_members->_testButton->SetBorderGradientAnimationSpeed(0.0005f);
-    _members->_testTextBox->SetBorderGradientRotationSpeed(2.5f);
+    _members->_testTextBox->SetBorderGradientRotationSpeed(5.0f);
     _members->_testTextBox->SetBorderWidth(2.0f);
     _members->_testTextBox->SetBorderFillType(RetroFuturaGUI::FillType::HUESTAR_GRADIENT);
+#if defined(TARGET_PLATFORM_LINUX)
     _members->_testTextBox->SetFontFamily("Noto Sans", 25.0f, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Normal);
+#elif defined(TARGET_PLATFORM_WINDOWS)
+    _members->_testTextBox->SetFontFamily("Yu Mincho", 25.0f, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Normal);
+#endif
     _members->_testTextBox->SetText("Test TextBox...ンンン");
     _members->_testTextBox->SetTextAlignment(RetroFuturaGUI::TextAlignment::Left);
     _members->_testTextBox->SetTextPadding(5.0f);
     //_members->_testTextBox->SetCaretColors(testtextv);
-    _members->_testTextBox->SetCaretGradientAnimationSpeed(2.5f);
+    _members->_testTextBox->SetCaretGradientAnimationSpeed(5.0f);
     _members->_testTextBox->SetCaretFillType(RetroFuturaGUI::FillType::HUESTAR_GRADIENT);
 
 
@@ -162,7 +181,11 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
     _members->_testLabel->SetPosition(glm::vec3(0.0f, -100.0f, 0.0f));
     _members->_testLabel->SetSize(glm::vec3(300.0f, 90.0f, 0.01f));
     _members->_testLabel->SetRotation(0.0f);
+#if defined(TARGET_PLATFORM_LINUX)
     _members->_testLabel->SetFontFamily("Noto Sans", 25.0f, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Normal);
+#elif defined(TARGET_PLATFORM_WINDOWS)
+    _members->_testLabel->SetFontFamily("Yu Mincho", 25.0f, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Normal);
+#endif
     _members->_testLabel->SetText("Test Label");
     _members->_testLabel->SetTextAlignment(RetroFuturaGUI::TextAlignment::Center);
     _members->_testLabel->SetTextColor(glm::vec4(1.0f), RetroFuturaGUI::ColorState::Enabled);
