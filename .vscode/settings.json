@@ -1,5 +1,26 @@
 {
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/build/x64-windows/compile_commands.json",
+    "C_Cpp.default.compilerPath": "cl.exe",
+    "C_Cpp.default.compilerArgs": [
+        "/std:c++latest",
+        "/EHsc",
+        "/DWIN32",
+        "/D_WIN32",
+        "/D_WIN64",
+        "/DTARGET_PLATFORM_WINDOWS",
+        "/DUNICODE",
+        "/D_UNICODE",
+        "/D_DEBUG"
+    ],
+    "clangd.path": "clangd",
+    "clangd.arguments": [
+        "--background-index",
+        "--compile-commands-dir=${workspaceFolder}/build/x64-windows",
+        "--query-driver=C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.43.34808/bin/Hostx64/x64/cl.exe"
+    ],
+    "clangd.enabled": true,
+    "C_Cpp.intelliSenseEngine": "disabled",
     "files.associations": {
         "*.in": "cpp",
         "xstring": "cpp",

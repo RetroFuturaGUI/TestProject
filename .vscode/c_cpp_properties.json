@@ -6,15 +6,26 @@
                 "${workspaceFolder}/**",
                 "${vcpkgRoot}/x64-windows/include"
             ],
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/**"
+                ]
+            },
             "defines": [
                 "_DEBUG",
                 "UNICODE",
-                "_UNICODE"
+                "_UNICODE",
+                "WIN32",
+                "_WIN32",
+                "_WIN64",
+                "TARGET_PLATFORM_WINDOWS"
             ],
             "windowsSdkVersion": "10.0.26100.0",
             "compilerPath": "cl.exe",
             "cStandard": "c23",
-            "intelliSenseMode": "windows-msvc-x64"
+            "cppStandard": "c++23",
+            "intelliSenseMode": "windows-msvc-x64",
+            "compileCommands": "${workspaceFolder}/build/x64-windows/compile_commands.json"
         },
         {
             "name": "Win64",
@@ -22,17 +33,28 @@
                 "${workspaceFolder}/**",
                 "${vcpkgRoot}/x64-windows/include"
             ],
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/**"
+                ]
+            },
             "defines": [
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE",
+                "WIN32",
+                "_WIN32",
+                "_WIN64",
+                "TARGET_PLATFORM_WINDOWS",
                 "MYSYMBOL",
                 "MYVALUE=1"
             ],
             "windowsSdkVersion": "10.0.26100.0",
             "compilerPath": "cl.exe",
             "cStandard": "c23",
-            "intelliSenseMode": "windows-msvc-x64"
+            "cppStandard": "c++23",
+            "intelliSenseMode": "windows-msvc-x64",
+            "compileCommands": "${workspaceFolder}/build/x64-windows/compile_commands.json"
         },
         {
             "name": "Linux",

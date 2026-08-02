@@ -32,7 +32,7 @@
             "name": "(Windows) Launch",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/x64-Windows/Debug/TestProject.exe",
+            "program": "${workspaceFolder}/build/x64-windows/Debug/TestProject.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",

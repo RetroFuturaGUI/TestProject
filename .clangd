@@ -1,0 +1,37 @@
+CompileFlags:
+  Add:
+    - -DWIN32
+    - -D_WIN32
+    - -D_WIN64
+    - -DTARGET_PLATFORM_WINDOWS
+    - -DUNICODE
+    - -D_UNICODE
+    - -D_DEBUG
+    - -std=c++latest
+    - -fms-compatibility
+    - -fms-extensions
+    - -I${workspaceFolder}/source
+    - -I${workspaceFolder}/source/code
+    - -I${workspaceFolder}/source/generated
+    - -I${workspaceFolder}/source/generated/impl
+    - -I${workspaceFolder}/RetroFuturaGUI/source
+    - -I${workspaceFolder}/RetroFuturaGUI/source/Borders
+    - -I${workspaceFolder}/RetroFuturaGUI/source/Fonts
+    - -I${workspaceFolder}/RetroFuturaGUI/source/Widgets
+    - -I${workspaceFolder}/RetroFuturaGUI/source/Widgets/Mechanisms
+    - -I${workspaceFolder}/RetroFuturaGUI/source/OpenGlHelpers
+    - -I${workspaceFolder}/RetroFuturaGUI/source/Shapes
+    - -I${workspaceFolder}/RetroFuturaGUI/source/Shaders
+    - -I${workspaceFolder}/RetroFuturaGUI/source/Types
+    - -I${workspaceFolder}/RetroFuturaGUI/PlatformBridge/source
+    - -I${workspaceFolder}/RetroFuturaGUI/PlatformBridge/source/Impl/Windows
+    - -I"C:/vcpkg/installed/x64-windows/include"
+    - -I${workspaceFolder}/build/x64-windows
+    - -I${workspaceFolder}/build/x64-windows/RetroFuturaGUI/PlatformBridge
+    - -I${workspaceFolder}/build/x64-windows/RetroFuturaGUI/Debug
+    - -I${workspaceFolder}/build/x64-windows/RetroFuturaGUI/PlatformBridge/Debug
+    - -I${workspaceFolder}/build/x64-windows/RetroFuturaGUI/RetroFuturaGUI.dir/Debug
+    - -I${workspaceFolder}/build/x64-windows/TestProject.dir/Debug
+  CompilationDatabase: build/x64-windows/compile_commands.json
+  # Do not remove Linux defines here. If you switch to a Linux build, clangd
+  # should use the active compile database or a Linux-specific config instead.

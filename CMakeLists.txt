@@ -6,10 +6,20 @@ message(STATUS "CMAKE_TOOLCHAIN_FILE: ${CMAKE_TOOLCHAIN_FILE}")
 
 project("TestProject" VERSION 0.1.0)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+if(NOT DEFINED TARGETPLATFORM)
+    if(WIN32)
+        set(TARGETPLATFORM "x64-Windows" CACHE STRING "Target platform for the build")
+    else()
+        set(TARGETPLATFORM "x64-Linux" CACHE STRING "Target platform for the build")
+    endif()
+endif()
 
+message(STATUS "-- Target Platform: ${TARGETPLATFORM}")
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 if(DEFINED LANG AND LANG)
     message(STATUS "-- Target Lang: ${LANG}")
@@ -30,6 +40,19 @@ else()
     )
 endif()
 
+if(TARGETPLATFORM STREQUAL "x64-Linux")
+    target_compile_definitions(TestProject PRIVATE TARGET_PLATFORM_LINUX)
+elseif(TARGETPLATFORM STREQUAL "x64-Windows")
+    target_compile_definitions(TestProject PRIVATE
+        TARGET_PLATFORM_WINDOWS
+        WIN32 _WIN32 _WIN64
+        UNICODE _UNICODE
+        $<$<CONFIG:Debug>:_DEBUG>
+        $<$<CONFIG:Release>:NDEBUG>
+    )
+else()
+    message(WARNING "Unknown TARGETPLATFORM '${TARGETPLATFORM}'. clangd will not get platform-specific defines.")
+endif()
 
 if(MSVC)
     add_compile_options(/W4 /WX)
@@ -88,6 +111,20 @@ if(LANG MATCHES "CSharp")
                 -P "${CMAKE_CURRENT_SOURCE_DIR}/copy_script.cmake"
         COMMENT "Copying build output (including subfolders) to C# directory..."
     )
+elseif(
+LANG MATCHES "Rust")
+        add_custom_command(TARGET TestProject
+        COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_CURRENT_SOURCE_DIR}/RetroFuturaGUI/Resources/Bindings/RetroFuturaGuiBinding.rs"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/code/RustProject/RetroFuturaGuiBinding.rs"
+        COMMENT "Copying binding file"
+    )
+
+    add_custom_command(TARGET TestProject POST_BUILD
+        COMMAND cargo build --manifest-path "${CMAKE_CURRENT_SOURCE_DIR}/source/code/RustProject/Cargo.toml" --debug
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/source/code/RustProject"
+        COMMENT "Building Rust project after DLL..."
+)
 elseif(LANG MATCHES "Python")
     add_custom_command(TARGET TestProject POST_BUILD
         COMMAND ${CMAKE_COMMAND}
@@ -120,4 +157,4 @@ endif()
 #run cmake (RELEASE): & "C:\Program Files\CMake\bin\cmake.exe" .. CMakeLists.txt -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Release -DLANG=<LANG> -B x64-windows
 #build: & "C:\Program Files\CMake\bin\cmake.exe" --build x64-windows
 
-#replace <LANG> with CSharp or Python
+#replace <LANG> with CSharp, Python or Rust
