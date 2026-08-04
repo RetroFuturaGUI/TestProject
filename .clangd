@@ -17,6 +17,7 @@ CompileFlags:
     - -I${workspaceFolder}/RetroFuturaGUI/source
     - -I${workspaceFolder}/RetroFuturaGUI/source/Borders
     - -I${workspaceFolder}/RetroFuturaGUI/source/Fonts
+    - -I${workspaceFolder}/RetroFuturaGUI/source/Mesh
     - -I${workspaceFolder}/RetroFuturaGUI/source/Widgets
     - -I${workspaceFolder}/RetroFuturaGUI/source/Widgets/Mechanisms
     - -I${workspaceFolder}/RetroFuturaGUI/source/OpenGlHelpers
@@ -32,6 +33,6 @@ CompileFlags:
     - -I${workspaceFolder}/build/x64-windows/RetroFuturaGUI/PlatformBridge/Debug
     - -I${workspaceFolder}/build/x64-windows/RetroFuturaGUI/RetroFuturaGUI.dir/Debug
     - -I${workspaceFolder}/build/x64-windows/TestProject.dir/Debug
-  CompilationDatabase: build/x64-windows/compile_commands.json
+  CompilationDatabase: build/x64-windows
   # Do not remove Linux defines here. If you switch to a Linux build, clangd
   # should use the active compile database or a Linux-specific config instead.

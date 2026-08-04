@@ -40,9 +40,11 @@ else()
     )
 endif()
 
-if(TARGETPLATFORM STREQUAL "x64-Linux")
+string(TOLOWER "${TARGETPLATFORM}" TARGETPLATFORM_LOWER)
+
+if(TARGETPLATFORM_LOWER STREQUAL "x64-linux")
     target_compile_definitions(TestProject PRIVATE TARGET_PLATFORM_LINUX)
-elseif(TARGETPLATFORM STREQUAL "x64-Windows")
+elseif(TARGETPLATFORM_LOWER STREQUAL "x64-windows")
     target_compile_definitions(TestProject PRIVATE
         TARGET_PLATFORM_WINDOWS
         WIN32 _WIN32 _WIN64
@@ -141,20 +143,20 @@ endif()
 
 
 #exe mode Windows:
-#run cmake (DEBUG):   & "C:\Program Files\CMake\bin\cmake.exe" .. CMakeLists.txt -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Debug   -B x64-windows
-#run cmake (RELEASE): & "C:\Program Files\CMake\bin\cmake.exe" .. CMakeLists.txt -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Release -B x64-windows
+#run cmake (DEBUG):   & "C:\Program Files\CMake\bin\cmake.exe" -S .. -G Ninja -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Debug   -B x64-windows
+#run cmake (RELEASE): & "C:\Program Files\CMake\bin\cmake.exe" -S .. -G Ninja -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Release -B x64-windows
 #build: & "C:\Program Files\CMake\bin\cmake.exe" --build x64-windows
 #run: x64-windows/Debug/TestProject.exe
 
 #exe mode Linux:
-#run cmake (DEBUG):   cmake .. CMakeLists.txt -DTARGETPLATFORM=x64-Linux -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Debug   -B x64-Linux
-#run cmake (RELEASE): cmake .. CMakeLists.txt -DTARGETPLATFORM=x64-Linux -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Release -B x64-Linux
+#run cmake (DEBUG):   cmake -S .. -G Ninja -DTARGETPLATFORM=x64-Linux -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Debug   -B x64-Linux
+#run cmake (RELEASE): cmake -S .. -G Ninja -DTARGETPLATFORM=x64-Linux -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Release -B x64-Linux
 #build: cmake --build x64-Linux
 #run: ./x64-Linux/TestProject
 
 #dll mode Windows:
-#run cmake (DEBUG):   & "C:\Program Files\CMake\bin\cmake.exe" .. CMakeLists.txt -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Debug   -DLANG=<LANG> -B x64-windows
-#run cmake (RELEASE): & "C:\Program Files\CMake\bin\cmake.exe" .. CMakeLists.txt -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Release -DLANG=<LANG> -B x64-windows
+#run cmake (DEBUG):   & "C:\Program Files\CMake\bin\cmake.exe" -S .. -G Ninja -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Debug   -DLANG=<LANG> -B x64-windows
+#run cmake (RELEASE): & "C:\Program Files\CMake\bin\cmake.exe" -S .. -G Ninja -DTARGETPLATFORM=x64-windows -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Release -DLANG=<LANG> -B x64-windows
 #build: & "C:\Program Files\CMake\bin\cmake.exe" --build x64-windows
 
 #replace <LANG> with CSharp, Python or Rust
