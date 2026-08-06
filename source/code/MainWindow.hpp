@@ -49,6 +49,8 @@ namespace TestProject
         void on_testButton_clicked()
         {
             std::println("testButton Clicked!");
+            static f32 currentRotation = 0.0f;
+            _members->_testModel->SetRotation(currentRotation += 5.0f);
         }
 
         void on_testTextBox_textChange()

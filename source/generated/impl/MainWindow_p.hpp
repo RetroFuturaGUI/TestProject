@@ -4,6 +4,9 @@
 #include "Label.hpp"
 #include "Window.hpp"
 #include "TextBox.hpp"
+#include "Image.hpp"
+#include "Model.hpp"
+#include <memory>
 
 namespace TestProject
 {
@@ -19,5 +22,7 @@ namespace TestProject
         std::unique_ptr<RetroFuturaGUI::Button> _testButton;
         std::unique_ptr<RetroFuturaGUI::Label> _testLabel;
         std::unique_ptr<RetroFuturaGUI::TextBox> _testTextBox;
+        std::unique_ptr<RetroFuturaGUI::Image> _testImage;
+        std::unique_ptr<RetroFuturaGUI::Model> _testModel;
     };
 }

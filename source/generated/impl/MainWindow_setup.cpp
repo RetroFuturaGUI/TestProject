@@ -191,11 +191,26 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
     _members->_testLabel->SetTextColor(glm::vec4(1.0f), RetroFuturaGUI::ColorState::Enabled);
     _members->_testLabel->SetTextPadding(5.0f);
     
+//Image
+    _members->_testImage = std::make_unique<RetroFuturaGUI::Image>(_members->_window->GetName() + "/TestImage", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window, "Resources/img/AlphaTest.png");
+    _members->_testImage->SetSize(glm::vec3(300.0f, 90.0f, 0.01f));
+    _members->_testImage->SetPosition(glm::vec3(0.0f, 100.0f, 0.0f));
+   // _members->_testImage->SetRotation(0.0f);
+    
+//Model
+        _members->_testModel = std::make_unique<RetroFuturaGUI::Model>(_members->_window->GetName() + "/TestModel", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window);
+        _members->_testModel->LoadModel("Resources/backpack/backpack.obj");
+        _members->_testModel->SetSize(glm::vec3(90.0f, 90.0f, 90.0f));
+
+
+
 
     //Garnish lasagna
     _members->_testLasagna->AttachWidget(0, 0, 0, &*_members->_testLabel, RetroFuturaGUI::SizingMode::FIXED);
     _members->_testLasagna->AttachWidget(1, 0, 0, &*_members->_testTextBox, RetroFuturaGUI::SizingMode::FIXED);
     _members->_testLasagna->AttachWidget(1, 1, 0, &*_members->_testButton, RetroFuturaGUI::SizingMode::FIXED);
+    _members->_testLasagna->AttachWidget(0, 1, 0, &*_members->_testImage, RetroFuturaGUI::SizingMode::FIXED);
+    _members->_testLasagna->AttachWidget(2, 1, 0, &*_members->_testModel, RetroFuturaGUI::SizingMode::FIXED);
 
 
 #ifdef DYNLIB_MODE
