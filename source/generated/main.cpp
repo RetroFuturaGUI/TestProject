@@ -1,6 +1,7 @@
 #include <config.hpp>
 #include "IncludeHelper.hpp"
 #include <print>
+#include "ResourceManager.hpp"
 #include "Window.hpp"
 #include <chrono>
 #include <thread>
@@ -41,7 +42,7 @@ extern "C" EXPORT_API void ConnectSlot(const char* id, RetroFuturaGUI::CallbackT
 	RetroFuturaGUI::DynamicLibWidgetManager::ConnectSlot(id, callback, action, async);
 }
 
-extern "C" EXPORT_API void DisonnectSlot(const char* id, RetroFuturaGUI::CallbackType callback, const i32 action)
+extern "C" EXPORT_API void DisconnectSlot(const char* id, RetroFuturaGUI::CallbackType callback, const i32 action)
 {
 	RetroFuturaGUI::DynamicLibWidgetManager::DisconnectSlot(id, callback, action);
 }
