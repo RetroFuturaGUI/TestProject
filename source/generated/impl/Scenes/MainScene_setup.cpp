@@ -1,19 +1,20 @@
-#include "CheckBox.hpp"
-#include "Fonts.hpp"
-#include "IRangedValue.hpp"
-#include "MainWindow.hpp"
+#include "MainScene.hpp"
+#include "MainScene_p.hpp"
+#include "Window.hpp"
+#include "SceneLoader.hpp"
 #include "IncludeHelper.hpp"
 #include "PlatformBridge.hpp"
-#include "FontManager.hpp"
-#include "ProgressBar.hpp"
-#include "RadioButtonGroup.hpp"
+#include "Fonts.hpp"
+#include "IDropDown.hpp"
+#include "IRangedValue.hpp"
 #include "Rectangle.hpp"
-#include "Slider.hpp"
+#include "ResourceManager.hpp"
 #include "SvgTexture.hpp"
-#include "Table.hpp"
 #include "UnicodeBlocks.hpp"
+#include <glm/ext/vector_float3.hpp>
 #include <memory>
 #include <vector>
+#include <print>
 
 #ifdef DYNLIB_MODE
 
@@ -21,97 +22,34 @@
 
 #endif
 
-void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 width, const i32 height)
+TestProject::MainScene::MainScene(RetroFuturaGUI::Window* parentWindow)
 {
-    bool frutiger = false;
-    RetroFuturaGUI::FontManager::Init();
+    _members = std::make_unique<MainScene_p>();
+    setup(parentWindow);
+}
 
-    _members = std::make_unique<MainWindow_p>();
-    _members->_window = std::make_unique<RetroFuturaGUI::Window>(_members->_name, width, height);
-    std::vector<glm::vec4> _windowBgColors { { 0.0f, 0.2f, 0.7f, 1.0f }, { 0.61f, 0.06f, 0.5f, 1.0f }, { 0.0f, 0.1f, 0.69f, 1.0f }};
-    _members->_window->SetBackgroundColors(_windowBgColors, RetroFuturaGUI::ColorState::Enabled);
-    _members->_window->SetBackgroundFillType(RetroFuturaGUI::FillType::LINEAR_GRADIENT);
-    _members->_window->SetBackgroundGradientAnimationSpeed(0.002f);
-    _members->_window->SetBackgroundGradientRotationSpeed(0.1f);
-    static std::vector<f32> dotRadii = { 2.0f, 0.0f,2.0f };
-    _members->_window->SetBackgroundDotRadiusTransfer(dotRadii);
-    _members->_window->SetBackgroundDotDistance(25.0f);
-    _members->_window->SetBackgroundDotSizeTransferDegree(35.0f);
-    _members->_window->SetBackgroundDotColor(glm::vec4(0.6f, 0.6f, 0.6f, 0.8f));
-    _members->_window->SetBackgroundDotAnimationSpeed(-0.13f);
-    _members->_window->SetBackgroundDotTransparencyTransfer(0.4f);
-    static std::vector<f32> fogDensity = { 1.0f, 0.55f, 0.3f, 0.15f };
-    _members->_window->SetBackgroundFogDensity(fogDensity);
-    _members->_window->SetBackgroundFogAlpha(0.5f);
-    _members->_window->SetBackgroundFogSpeed(0.12f);
-    _members->_window->SetBackgroundFogClearing(0.1f);
+TestProject::MainScene::~MainScene()
+{
+    //Unregister before the scene is freed!
+    if(_members && _members->_scene)
+        RetroFuturaGUI::SceneLoader::UnregisterScene(RetroFuturaGUI::SceneLoader::GetSceneID(_members->_scene->GetName()));
+}
 
-    GLFWwindow* window = _members->_window->GetGlfwWindow();
-    RetroFuturaGUI::Projection& projection = *_members->_window->GetProjection(); 
-    glm::vec2 resolution = projection.GetResolution();
-    _members->_window->ShowWindowBar(true);
-#if defined(TARGET_PLATFORM_LINUX)
-    RetroFuturaGUI::FontManager::LoadFont("Noto Sans", 25, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Regular, BasicLatinFirst, BasicLatinLast);
-    RetroFuturaGUI::FontManager::ExtendFontset("Noto Sans", "Noto Sans", 25, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Regular, Latin1SupplementFirst, Latin1SupplementLast);
-    RetroFuturaGUI::FontManager::ExtendFontset("Noto Sans", "Noto Sans CJK JP", 25, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Regular, HiraganaFirst, HiraganaLast);
-    RetroFuturaGUI::FontManager::ExtendFontset("Noto Sans", "Noto Sans CJK JP", 25, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Regular, KatakanaFirst, KatakanaLast);
-#elif defined(TARGET_PLATFORM_WINDOWS)
-    RetroFuturaGUI::FontManager::LoadFont("Arial", 25, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Regular, BasicLatinFirst, BasicLatinLast);
-    RetroFuturaGUI::FontManager::ExtendFontset("Arial", "Arial", 25, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Regular, Latin1SupplementFirst, Latin1SupplementLast);
-    //RetroFuturaGUI::FontManager::ExtendFontset("Yu Mincho", "Yu Mincho", 25, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Regular, HiraganaFirst, HiraganaLast);
-    //RetroFuturaGUI::FontManager::ExtendFontset("Yu Mincho", "Yu Mincho", 25, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Regular, KatakanaFirst, KatakanaLast);
-#endif
-    
-#if defined(TARGET_PLATFORM_LINUX)
-    _members->_window->GetWindowBar().SetWindowTitle(windowTitle, "Noto Sans");
-#elif defined(TARGET_PLATFORM_WINDOWS)
-    _members->_window->GetWindowBar().SetWindowTitle(windowTitle, "Arial");
-#endif
-    _members->_window->GetWindowBar().EnableElement(RetroFuturaGUI::WindowBar::ElementType::Title);
-    _members->_window->GetWindowBar().EnableElement(RetroFuturaGUI::WindowBar::ElementType::CloseButton);
-    _members->_window->GetWindowBar().EnableElement(RetroFuturaGUI::WindowBar::ElementType::MaximizeButton);
-    _members->_window->GetWindowBar().EnableElement(RetroFuturaGUI::WindowBar::ElementType::MinimizeButton);
-    _members->_window->GetWindowBar().EnableElement(RetroFuturaGUI::WindowBar::ElementType::Background);
-    std::vector<glm::vec4>col1( {{ glm::vec4(1.0f, 0.1f, 0.1f, 0.65f) }} );
-    std::vector<glm::vec4>col2( {{ glm::vec4(1.0f, 0.2f, 0.2f, 0.65f) }} );
-    std::vector<glm::vec4>col3( {{ glm::vec4(1.0f, 0.3f, 0.3f, 0.75f) }} );
-    _members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::CloseButton, std::span<glm::vec4>(col1.data(), col1.size()), RetroFuturaGUI::ColorState::Enabled);
-    _members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::CloseButton, std::span<glm::vec4>(col2.data(), col2.size()), RetroFuturaGUI::ColorState::Hover);
-    _members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::CloseButton, std::span<glm::vec4>(col3.data(), col3.size()), RetroFuturaGUI::ColorState::Clicked);
-	
-    std::vector<glm::vec4>col4( {{ glm::vec4(0.5f, 0.5f, 0.5f, 0.75f) }} );
-    std::vector<glm::vec4>col5( {{ glm::vec4(0.7f, 0.7f, 0.7f, 0.75f) }} );
-    std::vector<glm::vec4>col6( {{ glm::vec4(0.8f, 0.8f, 0.8f, 0.85f) }} );
-    _members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MaximizeButton, std::span<glm::vec4>(col4.data(), col4.size()), RetroFuturaGUI::ColorState::Enabled);
-    _members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MaximizeButton, std::span<glm::vec4>(col5.data(), col5.size()), RetroFuturaGUI::ColorState::Hover);
-    _members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MaximizeButton, std::span<glm::vec4>(col6.data(), col6.size()), RetroFuturaGUI::ColorState::Clicked);
-	
-    _members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MinimizeButton, std::span<glm::vec4>(col4.data(), col4.size()), RetroFuturaGUI::ColorState::Enabled);
-    _members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MinimizeButton, std::span<glm::vec4>(col5.data(), col5.size()), RetroFuturaGUI::ColorState::Hover);
-    _members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MinimizeButton, std::span<glm::vec4>(col6.data(), col6.size()), RetroFuturaGUI::ColorState::Clicked);
-	
-    _members->_window->GetWindowBar().SetButtonCornerRadii(glm::vec4(10.0f), RetroFuturaGUI::WindowBar::ElementType::CloseButton);
-	_members->_window->GetWindowBar().SetButtonCornerRadii(glm::vec4(10.0f), RetroFuturaGUI::WindowBar::ElementType::MaximizeButton);
-	_members->_window->GetWindowBar().SetButtonCornerRadii(glm::vec4(10.0f), RetroFuturaGUI::WindowBar::ElementType::MinimizeButton);
-    
+RetroFuturaGUI::Scene* TestProject::MainScene::GetScene() const
+{
+    if(!_members)
+        return nullptr;
 
-    std::vector<glm::vec4>col8( {{ glm::vec4(0.5f, 0.0f, 1.0f, 1.0f) }} );
-    _members->_window->GetWindowBar().SetBackgroundColors(std::span<glm::vec4>(col8.data(), col8.size()));
+    return _members->_scene.get();
+}
 
-    if(frutiger)
-    {
-        std::string path = PlatformBridge::Paths::GetExecutablePath();
-#if defined(_WIN32) || defined(_WIN64)
-        path = path.substr(0, path.find_last_of(R"(\)"));
-        path.append(R"(\Resources\img\FrutigerAero.png)");
-#else
-        path = path.substr(0, path.find_last_of(R"(/)"));
-        path.append("/ShaderSource/");
-#endif
+void TestProject::MainScene::setup(RetroFuturaGUI::Window* parentWindow)
+{
+    if(!parentWindow)
+        return;
 
-      _members->_window->SetBackgroundImage(path);
-    }
-
+    RetroFuturaGUI::Projection& projection { *parentWindow->GetProjection() };
+    GLFWwindow* window { parentWindow->GetGlfwWindow() };
 
     //Lasagna
    RetroFuturaGUI::AxisDefinition axisDefinition = 
@@ -121,10 +59,19 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
         { 0.05f, 0.05 } //layer
 	};
 
-	_members->_testLasagna = std::make_unique<RetroFuturaGUI::Lasagna>("TestLasagne", &projection, nullptr, RetroFuturaGUI::WidgetTypeID::Lasagna, window, axisDefinition);
+
+	_members->_scene = RetroFuturaGUI::SceneLoader::CreateScene("MainScene", parentWindow);
+
+	if(!_members->_scene)
+		return;
+
+	_members->_scene->SetLasagnaAxis(axisDefinition, &projection);
+
+	//Aliases the scene's root Lasagna, which outlives this function - the widgets below are parented to it and attached into its cells.
+	RetroFuturaGUI::Lasagna* _rootLasagna { _members->_scene->GetRootLasagna() };
     
     //Button
-    _members->_testButton = std::make_unique<RetroFuturaGUI::Button>("TestButton", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window);
+    _members->_testButton = std::make_unique<RetroFuturaGUI::Button>("TestButton", static_cast<RetroFuturaGUI::Projection*>(&projection), _rootLasagna, RetroFuturaGUI::WidgetTypeID::Lasagna, window);
     _members->_testButton->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
     _members->_testButton->SetSize(glm::vec3(200.0f, 90.0f, 0.01f));
     _members->_testButton->SetRotation(glm::vec3(0.0f));
@@ -150,14 +97,14 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
 #elif defined(TARGET_PLATFORM_WINDOWS)
     _members->_testButton->SetFontFamily("Arial", 25.0f, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Normal);
 #endif
-    _members->_testButton->SetText("Button");
+    _members->_testButton->SetText("Button", false);
     _members->_testButton->SetTextAlignment(RetroFuturaGUI::TextAlignment::Center);
     _members->_testButton->SetTextPadding(5.0f);
 
     /*if(frutiger)
     {  
 	_members->_testButton->SetCornerRadii(glm::vec4(45.0f));
-	_members->_testButton->SetWindowBackgroundImageTextureID(_members->_window->GetBackgroundImageId());
+	_members->_testButton->SetWindowBackgroundImageTextureID(parentWindow->GetBackgroundImageId());
 	_members->_testButton->SetBackgroundColor(glm::vec4(0.0f, 0.0f, 1.0f, 0.65f), RetroFuturaGUI::ColorState::Enabled);
 	_members->_testButton->SetBackgroundColor(glm::vec4(0.1f, 0.1f, 1.0f, 0.65f), RetroFuturaGUI::ColorState::Hover);
 	_members->_testButton->SetBackgroundColor(glm::vec4(0.2f, 0.2f, 1.0f, 0.75f), RetroFuturaGUI::ColorState::Clicked);    
@@ -165,7 +112,7 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
 
 
     //TextBox
-    _members->_testTextBox = std::make_unique<RetroFuturaGUI::TextBox>("TestTextBox", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window);
+    _members->_testTextBox = std::make_unique<RetroFuturaGUI::TextBox>("TestTextBox", static_cast<RetroFuturaGUI::Projection*>(&projection), _rootLasagna, RetroFuturaGUI::WidgetTypeID::Lasagna, window);
     _members->_testTextBox->SetPosition(glm::vec3(0.0f, -100.0f, 0.0f));
     _members->_testTextBox->SetSize(glm::vec3(300.0f, 50.0f, 0.01f));
     _members->_testTextBox->SetRotation(glm::vec3(0.0f));
@@ -216,7 +163,7 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
     _members->_testTextBox->SetSelectedAreaCornerRadii(glm::vec4(10.0f));
 
     //Label
-    _members->_testLabel = std::make_unique<RetroFuturaGUI::Label>("TestLabel", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window);
+    _members->_testLabel = std::make_unique<RetroFuturaGUI::Label>("TestLabel", static_cast<RetroFuturaGUI::Projection*>(&projection), _rootLasagna, RetroFuturaGUI::WidgetTypeID::Lasagna, window);
     _members->_testLabel->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
     _members->_testLabel->SetSize(glm::vec3(600.0f, 90.0f, 0.01f));
 #if defined(TARGET_PLATFORM_LINUX)
@@ -224,13 +171,13 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
 #elif defined(TARGET_PLATFORM_WINDOWS)
     _members->_testLabel->SetFontFamily("Arial", 25.0f, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Normal);
 #endif
-    _members->_testLabel->SetText("RetroFuturaGUI Test");
+    _members->_testLabel->SetText("RetroFuturaGUI Test", false);
     _members->_testLabel->SetTextAlignment(RetroFuturaGUI::TextAlignment::Left);
     _members->_testLabel->SetTextColor(glm::vec4(1.0f), RetroFuturaGUI::ColorState::Enabled);
     _members->_testLabel->SetTextPadding(5.0f);
     
 //RadioButtonLabel
-    _members->_testRadioButtonText = std::make_unique<RetroFuturaGUI::Label>("TestRadioButtonLabel", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window);
+    _members->_testRadioButtonText = std::make_unique<RetroFuturaGUI::Label>("TestRadioButtonLabel", static_cast<RetroFuturaGUI::Projection*>(&projection), _rootLasagna, RetroFuturaGUI::WidgetTypeID::Lasagna, window);
     _members->_testRadioButtonText->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
     _members->_testRadioButtonText->SetSize(glm::vec3(600.0f, 90.0f, 0.01f));
 #if defined(TARGET_PLATFORM_LINUX)
@@ -238,13 +185,13 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
 #elif defined(TARGET_PLATFORM_WINDOWS)
     _members->_testRadioButtonText->SetFontFamily("Arial", 25.0f, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Normal);
 #endif
-    _members->_testRadioButtonText->SetText("Radio Button");
+    _members->_testRadioButtonText->SetText("Radio Button", false);
     _members->_testRadioButtonText->SetTextAlignment(RetroFuturaGUI::TextAlignment::Left);
     _members->_testRadioButtonText->SetTextColor(glm::vec4(1.0f), RetroFuturaGUI::ColorState::Enabled);
     _members->_testRadioButtonText->SetTextPadding(5.0f);
 
 //RadioButtonLabel2
-    _members->_testRadioButtonText2 = std::make_unique<RetroFuturaGUI::Label>("TestRadioButtonLabel2", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window);
+    _members->_testRadioButtonText2 = std::make_unique<RetroFuturaGUI::Label>("TestRadioButtonLabel2", static_cast<RetroFuturaGUI::Projection*>(&projection), _rootLasagna, RetroFuturaGUI::WidgetTypeID::Lasagna, window);
     _members->_testRadioButtonText2->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
     _members->_testRadioButtonText2->SetSize(glm::vec3(600.0f, 90.0f, 0.01f));
 #if defined(TARGET_PLATFORM_LINUX)
@@ -252,25 +199,25 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
 #elif defined(TARGET_PLATFORM_WINDOWS)
     _members->_testRadioButtonText2->SetFontFamily("Arial", 25.0f, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Normal);
 #endif
-    _members->_testRadioButtonText2->SetText("Radio Button 2");
+    _members->_testRadioButtonText2->SetText("Radio Button 2", false);
     _members->_testRadioButtonText2->SetTextAlignment(RetroFuturaGUI::TextAlignment::Left);
     _members->_testRadioButtonText2->SetTextColor(glm::vec4(1.0f), RetroFuturaGUI::ColorState::Enabled);
     _members->_testRadioButtonText2->SetTextPadding(5.0f);
 
 //Image
-    _members->_testImage = std::make_unique<RetroFuturaGUI::Image>("TestImage", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window, "Resources/img/AlphaTest.png");
+    _members->_testImage = std::make_unique<RetroFuturaGUI::Image>("TestImage", static_cast<RetroFuturaGUI::Projection*>(&projection), _rootLasagna, RetroFuturaGUI::WidgetTypeID::Lasagna, window, "Resources/img/AlphaTest.png");
     _members->_testImage->SetSize(glm::vec3(300.0f, 90.0f, 0.01f));
     _members->_testImage->SetPosition(glm::vec3(0.0f, 100.0f, 0.0f));
    // _members->_testImage->SetRotation(0.0f);
     
 //Model
-    _members->_testModel = std::make_unique<RetroFuturaGUI::Model>("TestModel", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window);
+    _members->_testModel = std::make_unique<RetroFuturaGUI::Model>("TestModel", static_cast<RetroFuturaGUI::Projection*>(&projection), _rootLasagna, RetroFuturaGUI::WidgetTypeID::Lasagna, window);
     _members->_testModel->LoadModel("Resources/cat/12222_Cat_v1_l3.obj");
     _members->_testModel->SetSize(glm::vec3(5.0f, 5.0f, 5.0f));
     _members->_testModel->SetRotation({ -90.0f, 0.0f, 00.0f });
 
 //SvgImage
-    _members->_testSvgImage = std::make_unique<RetroFuturaGUI::SvgImage>("TestSvgImage", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window, "Resources/img/BackgroundElement.svg");
+    _members->_testSvgImage = std::make_unique<RetroFuturaGUI::SvgImage>("TestSvgImage", static_cast<RetroFuturaGUI::Projection*>(&projection), _rootLasagna, RetroFuturaGUI::WidgetTypeID::Lasagna, window, "Resources/img/BackgroundElement.svg");
     _members->_testSvgImage->SetSize(glm::vec3(300.0f, 90.0f, 0.01f));
     _members->_testSvgImage->SetPosition(glm::vec3(0.0f, 100.0f, 0.0f));
     
@@ -289,7 +236,7 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
     }
 
 //CheckBox
-    _members->_testCheckBox = std::make_unique<RetroFuturaGUI::CheckBox>("TextCheckBox", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window);
+    _members->_testCheckBox = std::make_unique<RetroFuturaGUI::CheckBox>("TextCheckBox", static_cast<RetroFuturaGUI::Projection*>(&projection), _rootLasagna, RetroFuturaGUI::WidgetTypeID::Lasagna, window);
     
     _members->_testCheckBox->SetSize({35.0f, 35.0f, 0.05f});
 
@@ -333,7 +280,7 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
     _members->_testCheckBox->SetInnerPadding(5.0f);
 
 //RadioButton
-    _members->_testRadioButton = std::make_unique<RetroFuturaGUI::RadioButton>("TestRadioButton", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window, nullptr);
+    _members->_testRadioButton = std::make_unique<RetroFuturaGUI::RadioButton>("TestRadioButton", static_cast<RetroFuturaGUI::Projection*>(&projection), _rootLasagna, RetroFuturaGUI::WidgetTypeID::Lasagna, window, nullptr);
     _members->_testRadioButton->SetSize({35.0f, 35.0f, 0.05f});
     _members->_testRadioButton->SetIndicatorColors(_chce, RetroFuturaGUI::ColorState::Enabled);
     _members->_testRadioButton->SetIndicatorColors(_chcd, RetroFuturaGUI::ColorState::Disabled);
@@ -353,7 +300,7 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
     _members->_testRadioButton->SetCornerRadii(glm::vec4(17.0f));
     _members->_testRadioButton->SetIndicatorPadding(3.0f);
 
-    _members->_testRadioButton2 = std::make_unique<RetroFuturaGUI::RadioButton>("TestRadioButton2", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window, nullptr);
+    _members->_testRadioButton2 = std::make_unique<RetroFuturaGUI::RadioButton>("TestRadioButton2", static_cast<RetroFuturaGUI::Projection*>(&projection), _rootLasagna, RetroFuturaGUI::WidgetTypeID::Lasagna, window, nullptr);
     _members->_testRadioButton2->SetSize({35.0f, 35.0f, 0.05f});
     _members->_testRadioButton2->SetIndicatorColors(_chce, RetroFuturaGUI::ColorState::Enabled);
     _members->_testRadioButton2->SetIndicatorColors(_chcd, RetroFuturaGUI::ColorState::Disabled);
@@ -374,7 +321,7 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
     _members->_testRadioButton2->SetIndicatorPadding(3.0f);
 
 //RadioButtonGroup
-    _members->_testRadioButtonGroup = std::make_unique<RetroFuturaGUI::RadioButtonGroup>("TextRadioButtonGroup", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window);
+    _members->_testRadioButtonGroup = std::make_unique<RetroFuturaGUI::RadioButtonGroup>("TextRadioButtonGroup", static_cast<RetroFuturaGUI::Projection*>(&projection), _rootLasagna, RetroFuturaGUI::WidgetTypeID::Lasagna, window);
     _members->_testRadioButtonGroup->SetSize({200.0f, 200.0f, 0.05f});
     _members->_testRadioButtonGroup->SetPosition(glm::vec3(100.0f, 100.0f, 0.0f));
     _members->_testRadioButton->SetParentGroup(&*_members->_testRadioButtonGroup);
@@ -427,7 +374,7 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
     _members->_testRadioButtonGroup->RegisterRadioButton(&*_members->_testRadioButton2, &*_members->_testRadioButtonText2, glm::i64vec2(1,0));
 
 //SLider
-    _members->_testSlider = std::make_unique<RetroFuturaGUI::Slider>("TestSlider", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window);
+    _members->_testSlider = std::make_unique<RetroFuturaGUI::Slider>("TestSlider", static_cast<RetroFuturaGUI::Projection*>(&projection), _rootLasagna, RetroFuturaGUI::WidgetTypeID::Lasagna, window);
     //On-screen footprint, not the track's own axes: 20 wide by 350 tall, since this one is Vertical below
     _members->_testSlider->SetSize({20.0f, 350.0f, 0.05f});
     _members->_testSlider->SetBackgroundColor(glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), RetroFuturaGUI::ColorState::Enabled);
@@ -446,7 +393,7 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
     _members->_testSlider->SetOrientation(RetroFuturaGUI::IRangedValue::Orientation::Vertical);
 
 //ProgressBar
-    _members->_testProgressBar = std::make_unique<RetroFuturaGUI::ProgressBar>("TestSlider", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window);
+    _members->_testProgressBar = std::make_unique<RetroFuturaGUI::ProgressBar>("TestSlider", static_cast<RetroFuturaGUI::Projection*>(&projection), _rootLasagna, RetroFuturaGUI::WidgetTypeID::Lasagna, window);
     _members->_testProgressBar->SetSize({20.0f, 350.0f, 0.05f});
     _members->_testProgressBar->SetBackgroundColor(glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), RetroFuturaGUI::ColorState::Enabled);
     _members->_testProgressBar->SetBackgroundFillType(RetroFuturaGUI::FillType::SOLID);
@@ -472,7 +419,7 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
         ._LayerDefinition  = { 1.0f }
     };
 
-    _members->_testStepper = std::make_unique<RetroFuturaGUI::Prefab>("TestStepper", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window, stepperAxis);
+    _members->_testStepper = std::make_unique<RetroFuturaGUI::Prefab>("TestStepper", static_cast<RetroFuturaGUI::Projection*>(&projection), _rootLasagna, RetroFuturaGUI::WidgetTypeID::Lasagna, window, stepperAxis);
 
     RetroFuturaGUI::Button* _increase { _members->_testStepper->AttachWidget<RetroFuturaGUI::Button>("Increase", { ._Row = 0 }) };
     RetroFuturaGUI::Slider* _stepperSlider { _members->_testStepper->AttachWidget<RetroFuturaGUI::Slider>("Slider", { ._Row = 1 }) };
@@ -519,7 +466,7 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
     std::vector<glm::vec4> textColors1 {{1.0f, 0.75f, 0.75f, 1.0f}};
     std::vector<glm::vec4> tableBGcolors1 {{0.35f, 0.35f, 0.35f, 1.0f}};
     std::vector<glm::vec4> tableBorderColors1 {{0.2f, 0.2f, 0.2f, 1.0f}};
-    _members->_testTable = std::make_unique<RetroFuturaGUI::Table>("TestTable", static_cast<RetroFuturaGUI::Projection*>(&projection), _members->_testLasagna.get(), RetroFuturaGUI::WidgetTypeID::Lasagna, window);
+    _members->_testTable = std::make_unique<RetroFuturaGUI::Table>("TestTable", static_cast<RetroFuturaGUI::Projection*>(&projection), _rootLasagna, RetroFuturaGUI::WidgetTypeID::Lasagna, window);
     _members->_testTable->SetSize({400.0f, 200.0f, 0.05f});
     _members->_testTable->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
     _members->_testTable->SetBorderWidth(2.0f);
@@ -600,21 +547,80 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
     _members->_testTable->SetHorizontalHeaderText("Column 1", 1   );
     _members->_testTable->SetCheckBoxBackgroundColors(tableBGcolors, RetroFuturaGUI::ColorState::Enabled);
 
+//ComboBox
+    _members->_testComboBox = std::make_unique<RetroFuturaGUI::ComboBox>("TestComboBox", static_cast<RetroFuturaGUI::Projection*>(&projection), _rootLasagna, RetroFuturaGUI::WidgetTypeID::Lasagna, window);
+    _members->_testComboBox->SetFontFamily("Arial", 25.0f, PlatformBridge::Fonts::Slant::Roman,PlatformBridge::Fonts::Weight::Normal);
+    _members->_testComboBox->AddItem("Item 0");
+    _members->_testComboBox->AddItem("Item 1");
+    _members->_testComboBox->AddItem("Item 2");
+    _members->_testComboBox->AddItem("Item 3");
+    _members->_testComboBox->AddItem("Item 4");
+    _members->_testComboBox->AddItem("Item 5");
+    _members->_testComboBox->AddItem("Item 6");
+    _members->_testComboBox->AddItem("Item 7");
+    _members->_testComboBox->AddItem("Item 8");
+    _members->_testComboBox->AddItem("Item 9");
+    _members->_testComboBox->SetSize(glm::vec3(240.0f, 60.0f, 0.01f));
+    _members->_testComboBox->SetBackgroundColor(RetroFuturaGUI::ResourceManager::_Eigengrau, RetroFuturaGUI::ColorState::Enabled);
+
+//ExtendedComboBox
+    _members->_testExtendedComboBox = std::make_unique<RetroFuturaGUI::ExtendedComboBox>("TestExtendedComboBox", static_cast<RetroFuturaGUI::Projection*>(&projection), _rootLasagna, RetroFuturaGUI::WidgetTypeID::Lasagna, window);
+    _members->_testExtendedComboBox->SetFontFamily("Arial", 25.0f, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Normal);
+    _members->_testExtendedComboBox->SetSize(glm::vec3(240.0f, 60.0f, 0.01f));
+    _members->_testExtendedComboBox->SetBackgroundColor(RetroFuturaGUI::ResourceManager::_Eigengrau, RetroFuturaGUI::ColorState::Enabled);
+    //the rows are whole widgets, so the closed box shows this text rather than the selected row
+    _members->_testExtendedComboBox->SetPreviewText("Pick an item");
+
+    //AddItem takes ownership and hands the item back, so each row can be configured after the font has been applied to it
+    RetroFuturaGUI::Button* extendedComboBoxButton
+    {
+        _members->_testExtendedComboBox->AddItem(std::make_unique<RetroFuturaGUI::Button>("TestExtendedComboBoxButton", static_cast<RetroFuturaGUI::Projection*>(&projection), &*_members->_testExtendedComboBox, RetroFuturaGUI::WidgetTypeID::ExtendedComboBox, window))
+    };
+    extendedComboBoxButton->SetText("Button Item", false);
+    extendedComboBoxButton->SetBackgroundColor(glm::vec4(0.3f, 0.3f, 0.9f, 1.0f), RetroFuturaGUI::ColorState::Enabled);
+
+    RetroFuturaGUI::Label* extendedComboBoxLabel
+    {
+        _members->_testExtendedComboBox->AddItem(std::make_unique<RetroFuturaGUI::Label>("TestExtendedComboBoxLabel", static_cast<RetroFuturaGUI::Projection*>(&projection), &*_members->_testExtendedComboBox, RetroFuturaGUI::WidgetTypeID::ExtendedComboBox, window))
+    };
+    extendedComboBoxLabel->SetText("Label Item", false);
+
+    //the combo box becomes a row of the extended one, so its ownership moves here and it is no longer attached to the lasagna itself
+    _members->_testExtendedComboBox->AddItem(std::move(_members->_testComboBox));
+    //the combo box becomes a row of the extended one, so its ownership moves here and it is no longer attached to the lasagna itself
+    _members->_testExtendedComboBox->SetDropDownPosition(RetroFuturaGUI::IDropDown::DropDownPosition::Right);
+
+    _members->_testSeparatorLine = std::make_unique<RetroFuturaGUI::SeparatorLine>("Test Separator Lien", static_cast<RetroFuturaGUI::Projection*>(&projection), _rootLasagna, RetroFuturaGUI::WidgetTypeID::Lasagna, window);
+    _members->_testSeparatorLine->SetSize(glm::vec3(200.0f, 5.0f, 0.01f));
+    _members->_testSeparatorLine->SetBackgroundColor(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), RetroFuturaGUI::ColorState::Enabled);
+    _members->_testSeparatorLine->SetBackgroundColor(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), RetroFuturaGUI::ColorState::Disabled);
+    _members->_testSeparatorLine->SetEnabled(true, false);
+    _members->_testSeparatorLine->SetBackgroundFillType(RetroFuturaGUI::FillType::SOLID);
+    _members->_testSeparatorLine->SetFontFamily("Arial", 15.0f, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Normal);
+    _members->_testSeparatorLine->SetTextPadding(8.0f);
+    _members->_testSeparatorLine->SetText("Section", false);
+    _members->_testSeparatorLine->ShowText(true);
+
 //Garnish lasagna
-    _members->_testLasagna->AttachWidget(1, 1, 0, &*_members->_testLabel, RetroFuturaGUI::SizingMode::FIXED, 1, 2);
-    _members->_testLasagna->AttachWidget(2, 2, 0, &*_members->_testTextBox, RetroFuturaGUI::SizingMode::FIXED);
-    _members->_testLasagna->AttachWidget(2, 1, 0, &*_members->_testButton, RetroFuturaGUI::SizingMode::FIXED);
-    //_members->_testLasagna->AttachWidget(0, 2, 0, &*_members->_testImage, RetroFuturaGUI::SizingMode::FIXED);
-    _members->_testLasagna->AttachWidget(1, 1, 1, &*_members->_testSvgImage, RetroFuturaGUI::SizingMode::FILL_XY, 3, 2);
-    //_members->_testLasagna->AttachWidget(3, 1, 0, &*_members->_testModel, RetroFuturaGUI::SizingMode::FIXED);
-    //_members->_testLasagna->AttachWidget(3, 2, 0, &*_members->_testRadioButton, RetroFuturaGUI::SizingMode::FIXED);
-    //_members->_testLasagna->AttachWidget(3, 2, 0, &*_members->_testRadioButtonGroup, RetroFuturaGUI::SizingMode::FILL_XY);
-    //_members->_testLasagna->AttachWidget(3, 2, 0, &*_members->_testCheckBox, RetroFuturaGUI::SizingMode::FIXED);
+    _rootLasagna->AttachWidget(1, 1, 0, &*_members->_testLabel, RetroFuturaGUI::SizingMode::FIXED, 1, 2);
+    _rootLasagna->AttachWidget(0, 0, 0, &*_members->_testTextBox, RetroFuturaGUI::SizingMode::FIXED, 1, 2); //swapped with the combo box, which needs a cell drawn later
+    _rootLasagna->AttachWidget(2, 1, 0, &*_members->_testButton, RetroFuturaGUI::SizingMode::FIXED);
+    //_rootLasagna->AttachWidget(0, 2, 0, &*_members->_testImage, RetroFuturaGUI::SizingMode::FIXED);
+    _rootLasagna->AttachWidget(1, 1, 1, &*_members->_testSvgImage, RetroFuturaGUI::SizingMode::FILL_XY, 3, 2);
+    //_rootLasagna->AttachWidget(3, 1, 0, &*_members->_testModel, RetroFuturaGUI::SizingMode::FIXED);
+    //_rootLasagna->AttachWidget(3, 2, 0, &*_members->_testRadioButton, RetroFuturaGUI::SizingMode::FIXED);
+    //_rootLasagna->AttachWidget(3, 2, 0, &*_members->_testRadioButtonGroup, RetroFuturaGUI::SizingMode::FILL_XY);
+    //_rootLasagna->AttachWidget(3, 2, 0, &*_members->_testCheckBox, RetroFuturaGUI::SizingMode::FIXED);
     //FILL_Y, not FILL_X: for a Vertical slider the cell should drive its length, which now runs down the screen
-    _members->_testLasagna->AttachWidget(3, 0, 0, &*_members->_testSlider, RetroFuturaGUI::SizingMode::FILL_Y, 2, 1);
-    //_members->_testLasagna->AttachWidget(3, 2, 0, &*_members->_testProgressBar, RetroFuturaGUI::SizingMode::FILL_X, 2, 1);
-    _members->_testLasagna->AttachWidget(3, 1, 0, &*_members->_testTable, RetroFuturaGUI::SizingMode::FIXED, 2, 2);
-    _members->_testLasagna->AttachWidget(3, 3, 0, &*_members->_testStepper, RetroFuturaGUI::SizingMode::FILL, 2, 1);
+    //_rootLasagna->AttachWidget(3, 0, 0, &*_members->_testSlider, RetroFuturaGUI::SizingMode::FILL_Y, 2, 1);
+    //_rootLasagna->AttachWidget(3, 2, 0, &*_members->_testProgressBar, RetroFuturaGUI::SizingMode::FILL_X, 2, 1);
+    _rootLasagna->AttachWidget(3, 1, 0, &*_members->_testTable, RetroFuturaGUI::SizingMode::FIXED, 2, 2);
+    _rootLasagna->AttachWidget(3, 3, 0, &*_members->_testStepper, RetroFuturaGUI::SizingMode::FILL, 2, 1);
+    _rootLasagna->AttachWidget(2, 0, 0, &*_members->_testSeparatorLine, RetroFuturaGUI::SizingMode::FIXED, 1, 1);
+
+    //the combo box is a row of the extended one now, so the extended one takes the cell: row 2 so the open lists draw after the SvgImage on layer 1
+    _rootLasagna->AttachWidget(2, 2, 0, &*_members->_testExtendedComboBox, RetroFuturaGUI::SizingMode::FIXED);
+
 
 
 #ifdef DYNLIB_MODE
@@ -640,7 +646,4 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
 #endif
 
     //_members->_testButton->SetRotation(glm::vec3(0.0f, 0.0f, 45.0f));
-
-    _members->_window->SetLasagna(&*_members->_testLasagna);
-
 }

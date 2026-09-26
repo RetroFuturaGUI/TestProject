@@ -1,8 +1,9 @@
 #pragma once
+#include "Scene.hpp"
 #include "Lasagna.hpp"
 #include "Button.hpp"
 #include "Label.hpp"
-#include "Window.hpp"
+#include "SeparatorLine.hpp"
 #include "TextBox.hpp"
 #include "Image.hpp"
 #include "SvgImage.hpp"
@@ -14,16 +15,16 @@
 #include "ProgressBar.hpp"
 #include "Table.hpp"
 #include "Prefab.hpp"
+#include "ComboBox.hpp"
+#include "ExtendedComboBox.hpp"
 #include <memory>
 
 namespace TestProject
 {
-    class MainWindow_p
+    class MainScene_p
     {
     public:
-        std::string _name { "MainWindow" };
-        std::unique_ptr<RetroFuturaGUI::Window> _window;
-        std::unique_ptr<RetroFuturaGUI::Lasagna> _testLasagna;
+        std::unique_ptr<RetroFuturaGUI::Scene> _scene;
         std::unique_ptr<RetroFuturaGUI::Button> _testButton;
         std::unique_ptr<RetroFuturaGUI::Label> _testLabel;
         std::unique_ptr<RetroFuturaGUI::TextBox> _testTextBox;
@@ -40,5 +41,8 @@ namespace TestProject
         std::unique_ptr<RetroFuturaGUI::ProgressBar> _testProgressBar;
         std::unique_ptr<RetroFuturaGUI::Table> _testTable;
         std::unique_ptr<RetroFuturaGUI::Prefab> _testStepper;
+        std::unique_ptr<RetroFuturaGUI::ComboBox> _testComboBox;
+        std::unique_ptr<RetroFuturaGUI::ExtendedComboBox> _testExtendedComboBox;
+        std::unique_ptr<RetroFuturaGUI::SeparatorLine> _testSeparatorLine;
     };
 }

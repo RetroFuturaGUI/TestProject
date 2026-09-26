@@ -26,7 +26,10 @@ if(DEFINED LANG AND LANG)
     message(STATUS "-- Building a library")
     add_library(TestProject SHARED
         "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/main.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/MainWindow_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Windows/MainWindow_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/MainScene_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/MenuBarScene_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/code/MainScene.cpp"
     )
     set_target_properties(TestProject PROPERTIES OUTPUT_NAME "TestProjectNative")
     set(DYNLIB_MODE ON CACHE BOOL "Build as a dynamic library")
@@ -36,7 +39,10 @@ else()
     message(STATUS "-- Building as an executable")
     add_executable("TestProject"
         "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/main.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/MainWindow_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Windows/MainWindow_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/MainScene_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/MenuBarScene_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/code/MainScene.cpp"
     )
 endif()
 
@@ -74,6 +80,8 @@ target_include_directories("TestProject" PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/source/code"
     "${CMAKE_CURRENT_SOURCE_DIR}/source/generated"
     "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl"
+    "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Windows"
+    "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes"
 )
 
 target_link_libraries("TestProject" PRIVATE
