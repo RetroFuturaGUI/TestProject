@@ -21,6 +21,13 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Before the targets on purpose: add_compile_options only reaches targets created after it.
+# /utf-8 reads sources and writes narrow literals as UTF-8 - and it's what makes std::print hand
+# text to the console as Unicode, instead of raw bytes the console decodes with the wrong code page.
+if(MSVC)
+    add_compile_options(/utf-8)
+endif()
+
 if(DEFINED LANG AND LANG)
     message(STATUS "-- Target Lang: ${LANG}")
     message(STATUS "-- Building a library")
@@ -29,6 +36,7 @@ if(DEFINED LANG AND LANG)
         "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Windows/MainWindow_setup.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/MainScene_setup.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/MenuBarScene_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/CustomMenuBarScene_setup.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/source/code/MainScene.cpp"
     )
     set_target_properties(TestProject PROPERTIES OUTPUT_NAME "TestProjectNative")
@@ -42,8 +50,15 @@ else()
         "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Windows/MainWindow_setup.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/MainScene_setup.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/MenuBarScene_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/CustomMenuBarScene_setup.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/source/code/MainScene.cpp"
     )
+
+    # MSVC only: sets the process codepage to UTF-8 so narrow paths work - see app.manifest.
+    # Linux needs nothing; paths there are raw bytes the kernel never transcodes.
+    if(MSVC)
+        target_sources("TestProject" PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/app.manifest")
+    endif()
 endif()
 
 string(TOLOWER "${TARGETPLATFORM}" TARGETPLATFORM_LOWER)

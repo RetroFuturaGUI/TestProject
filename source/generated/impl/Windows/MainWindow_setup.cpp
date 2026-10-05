@@ -1,6 +1,7 @@
 #include "MainWindow.hpp"
 #include "MainScene.hpp"
-#include "MenuBarScene.hpp"
+//#include "MenuBarScene.hpp"
+#include "CustomMenuBarScene.hpp"
 #include "SceneLoader.hpp"
 #include "FontManager.hpp"
 #include "IncludeHelper.hpp"
@@ -25,12 +26,12 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
     _members->_window->SetBackgroundFillType(RetroFuturaGUI::FillType::LINEAR_GRADIENT);
     _members->_window->SetBackgroundGradientAnimationSpeed(0.002f);
     _members->_window->SetBackgroundGradientRotationSpeed(0.1f);
-    static std::vector<f32> dotRadii = { 2.0f, 0.0f,2.0f };
-    _members->_window->SetBackgroundDotRadiusTransfer(dotRadii);
+    static std::vector<f32> dotDiameters = { 5.0f, 0.0f,5.0f };
+    _members->_window->SetBackgroundPrimaryRasterWidthTransfer(dotDiameters);
     _members->_window->SetBackgroundDotDistance(25.0f);
-    _members->_window->SetBackgroundDotSizeTransferDegree(35.0f);
-    _members->_window->SetBackgroundDotColor(glm::vec4(0.6f, 0.6f, 0.6f, 0.8f));
-    _members->_window->SetBackgroundDotAnimationSpeed(-0.13f);
+    _members->_window->SetBackgroundRasterDegree(35.0f);
+    _members->_window->SetBackgroundPrimaryRasterColor(glm::vec4(0.6f, 0.6f, 0.6f, 0.8f));
+    _members->_window->SetBackgroundRasterAnimationSpeed(-0.13f);
     _members->_window->SetBackgroundDotTransparencyTransfer(0.4f);
     static std::vector<f32> fogDensity = { 1.0f, 0.55f, 0.3f, 0.15f };
     _members->_window->SetBackgroundFogDensity(fogDensity);
@@ -41,7 +42,10 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
     GLFWwindow* window = _members->_window->GetGlfwWindow();
     RetroFuturaGUI::Projection& projection = *_members->_window->GetProjection(); 
     glm::vec2 resolution = projection.GetResolution();
-    _members->_window->ShowWindowBar(true);
+    //CustomMenuBarScene carries the title and the window controls now, so the window's own bar is
+    //never created. ShowWindowBar is the only thing that builds one, and GetWindowBar() dereferences
+    //it unguarded, so every call below had to go with it.
+    //_members->_window->ShowWindowBar(true);
 #if defined(TARGET_PLATFORM_LINUX)
     RetroFuturaGUI::FontManager::LoadFont("Noto Sans", 25, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Regular, BasicLatinFirst, BasicLatinLast);
     RetroFuturaGUI::FontManager::ExtendFontset("Noto Sans", "Noto Sans", 25, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Regular, Latin1SupplementFirst, Latin1SupplementLast);
@@ -54,41 +58,46 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
     //RetroFuturaGUI::FontManager::ExtendFontset("Yu Mincho", "Yu Mincho", 25, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Regular, KatakanaFirst, KatakanaLast);
 #endif
     
+//Window::SetWindowTitle rather than the bar's: it sets the native title GLFW shows in the taskbar,
+//and only forwards to the bar when one exists.
 #if defined(TARGET_PLATFORM_LINUX)
-    _members->_window->GetWindowBar().SetWindowTitle(windowTitle, "Noto Sans");
+    _members->_window->SetWindowTitle(windowTitle, "Noto Sans");
 #elif defined(TARGET_PLATFORM_WINDOWS)
-    _members->_window->GetWindowBar().SetWindowTitle(windowTitle, "Arial");
+    _members->_window->SetWindowTitle(windowTitle, "Arial");
 #endif
-    _members->_window->GetWindowBar().EnableElement(RetroFuturaGUI::WindowBar::ElementType::Title);
-    _members->_window->GetWindowBar().EnableElement(RetroFuturaGUI::WindowBar::ElementType::CloseButton);
-    _members->_window->GetWindowBar().EnableElement(RetroFuturaGUI::WindowBar::ElementType::MaximizeButton);
-    _members->_window->GetWindowBar().EnableElement(RetroFuturaGUI::WindowBar::ElementType::MinimizeButton);
-    _members->_window->GetWindowBar().EnableElement(RetroFuturaGUI::WindowBar::ElementType::Background);
-    std::vector<glm::vec4>col1( {{ glm::vec4(1.0f, 0.1f, 0.1f, 0.65f) }} );
-    std::vector<glm::vec4>col2( {{ glm::vec4(1.0f, 0.2f, 0.2f, 0.65f) }} );
-    std::vector<glm::vec4>col3( {{ glm::vec4(1.0f, 0.3f, 0.3f, 0.75f) }} );
-    _members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::CloseButton, std::span<glm::vec4>(col1.data(), col1.size()), RetroFuturaGUI::ColorState::Enabled);
-    _members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::CloseButton, std::span<glm::vec4>(col2.data(), col2.size()), RetroFuturaGUI::ColorState::Hover);
-    _members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::CloseButton, std::span<glm::vec4>(col3.data(), col3.size()), RetroFuturaGUI::ColorState::Clicked);
-	
-    std::vector<glm::vec4>col4( {{ glm::vec4(0.5f, 0.5f, 0.5f, 0.75f) }} );
-    std::vector<glm::vec4>col5( {{ glm::vec4(0.7f, 0.7f, 0.7f, 0.75f) }} );
-    std::vector<glm::vec4>col6( {{ glm::vec4(0.8f, 0.8f, 0.8f, 0.85f) }} );
-    _members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MaximizeButton, std::span<glm::vec4>(col4.data(), col4.size()), RetroFuturaGUI::ColorState::Enabled);
-    _members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MaximizeButton, std::span<glm::vec4>(col5.data(), col5.size()), RetroFuturaGUI::ColorState::Hover);
-    _members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MaximizeButton, std::span<glm::vec4>(col6.data(), col6.size()), RetroFuturaGUI::ColorState::Clicked);
-	
-    _members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MinimizeButton, std::span<glm::vec4>(col4.data(), col4.size()), RetroFuturaGUI::ColorState::Enabled);
-    _members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MinimizeButton, std::span<glm::vec4>(col5.data(), col5.size()), RetroFuturaGUI::ColorState::Hover);
-    _members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MinimizeButton, std::span<glm::vec4>(col6.data(), col6.size()), RetroFuturaGUI::ColorState::Clicked);
-	
-    _members->_window->GetWindowBar().SetButtonCornerRadii(glm::vec4(10.0f), RetroFuturaGUI::WindowBar::ElementType::CloseButton);
-	_members->_window->GetWindowBar().SetButtonCornerRadii(glm::vec4(10.0f), RetroFuturaGUI::WindowBar::ElementType::MaximizeButton);
-	_members->_window->GetWindowBar().SetButtonCornerRadii(glm::vec4(10.0f), RetroFuturaGUI::WindowBar::ElementType::MinimizeButton);
-    
 
-    std::vector<glm::vec4>col8( {{ glm::vec4(0.5f, 0.0f, 1.0f, 1.0f) }} );
-    _members->_window->GetWindowBar().SetBackgroundColors(std::span<glm::vec4>(col8.data(), col8.size()));
+//The window's own bar is gone, so all of its styling is dead. Kept commented rather than deleted, to
+//make going back to it a matter of uncommenting this block and ShowWindowBar above.
+    //_members->_window->GetWindowBar().EnableElement(RetroFuturaGUI::WindowBar::ElementType::Title);
+    //_members->_window->GetWindowBar().EnableElement(RetroFuturaGUI::WindowBar::ElementType::CloseButton);
+    //_members->_window->GetWindowBar().EnableElement(RetroFuturaGUI::WindowBar::ElementType::MaximizeButton);
+    //_members->_window->GetWindowBar().EnableElement(RetroFuturaGUI::WindowBar::ElementType::MinimizeButton);
+    //_members->_window->GetWindowBar().EnableElement(RetroFuturaGUI::WindowBar::ElementType::Background);
+    //std::vector<glm::vec4>col1( {{ glm::vec4(1.0f, 0.1f, 0.1f, 0.65f) }} );
+    //std::vector<glm::vec4>col2( {{ glm::vec4(1.0f, 0.2f, 0.2f, 0.65f) }} );
+    //std::vector<glm::vec4>col3( {{ glm::vec4(1.0f, 0.3f, 0.3f, 0.75f) }} );
+    //_members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::CloseButton, std::span<glm::vec4>(col1.data(), col1.size()), RetroFuturaGUI::ColorState::Enabled);
+    //_members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::CloseButton, std::span<glm::vec4>(col2.data(), col2.size()), RetroFuturaGUI::ColorState::Hover);
+    //_members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::CloseButton, std::span<glm::vec4>(col3.data(), col3.size()), RetroFuturaGUI::ColorState::Clicked);
+
+    //std::vector<glm::vec4>col4( {{ glm::vec4(0.5f, 0.5f, 0.5f, 0.75f) }} );
+    //std::vector<glm::vec4>col5( {{ glm::vec4(0.7f, 0.7f, 0.7f, 0.75f) }} );
+    //std::vector<glm::vec4>col6( {{ glm::vec4(0.8f, 0.8f, 0.8f, 0.85f) }} );
+    //_members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MaximizeButton, std::span<glm::vec4>(col4.data(), col4.size()), RetroFuturaGUI::ColorState::Enabled);
+    //_members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MaximizeButton, std::span<glm::vec4>(col5.data(), col5.size()), RetroFuturaGUI::ColorState::Hover);
+    //_members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MaximizeButton, std::span<glm::vec4>(col6.data(), col6.size()), RetroFuturaGUI::ColorState::Clicked);
+
+    //_members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MinimizeButton, std::span<glm::vec4>(col4.data(), col4.size()), RetroFuturaGUI::ColorState::Enabled);
+    //_members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MinimizeButton, std::span<glm::vec4>(col5.data(), col5.size()), RetroFuturaGUI::ColorState::Hover);
+    //_members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MinimizeButton, std::span<glm::vec4>(col6.data(), col6.size()), RetroFuturaGUI::ColorState::Clicked);
+
+    //_members->_window->GetWindowBar().SetButtonCornerRadii(glm::vec4(10.0f), RetroFuturaGUI::WindowBar::ElementType::CloseButton);
+	//_members->_window->GetWindowBar().SetButtonCornerRadii(glm::vec4(10.0f), RetroFuturaGUI::WindowBar::ElementType::MaximizeButton);
+	//_members->_window->GetWindowBar().SetButtonCornerRadii(glm::vec4(10.0f), RetroFuturaGUI::WindowBar::ElementType::MinimizeButton);
+
+
+    //std::vector<glm::vec4>col8( {{ glm::vec4(0.5f, 0.0f, 1.0f, 1.0f) }} );
+    //_members->_window->GetWindowBar().SetBackgroundColors(std::span<glm::vec4>(col8.data(), col8.size()));
 
     if(frutiger)
     {
@@ -109,7 +118,8 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
 //Scenes own their own widgets; this window only decides which ones exist and in what order.
 //The docked menu bar goes first, because reservations are taken in insertion order and MainScene
 //has to be fitted into whatever is left.
-    _members->_scenes.push_back(std::make_unique<MenuBarScene>(_members->_window.get()));
+    //_members->_scenes.push_back(std::make_unique<MenuBarScene>(_members->_window.get()));
+    _members->_scenes.push_back(std::make_unique<CustomMenuBarScene>(_members->_window.get()));
     _members->_scenes.push_back(std::make_unique<MainScene>(_members->_window.get()));
 
 

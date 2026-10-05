@@ -32,9 +32,11 @@ namespace TestProject
         void on_testTextBox_paste();
         void on_testTableTextChange();
         void on_testSlider_valueChanged();
+        void on_scene_update();
 
     private:
         std::unique_ptr<MainScene_p> _members;
         void setup(RetroFuturaGUI::Window* parentWindow);
+        void testAudioMetadata();
     };
 }

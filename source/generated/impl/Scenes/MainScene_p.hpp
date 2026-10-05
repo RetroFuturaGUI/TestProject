@@ -17,6 +17,7 @@
 #include "Prefab.hpp"
 #include "ComboBox.hpp"
 #include "ExtendedComboBox.hpp"
+#include "Video.hpp"
 #include <memory>
 
 namespace TestProject
@@ -44,5 +45,6 @@ namespace TestProject
         std::unique_ptr<RetroFuturaGUI::ComboBox> _testComboBox;
         std::unique_ptr<RetroFuturaGUI::ExtendedComboBox> _testExtendedComboBox;
         std::unique_ptr<RetroFuturaGUI::SeparatorLine> _testSeparatorLine;
+        std::unique_ptr<RetroFuturaGUI::Video> _testVideo;
     };
 }

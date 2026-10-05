@@ -1,4 +1,4 @@
-#include "MainScene.hpp"
+﻿#include "MainScene.hpp"
 #include "MainScene_p.hpp"
 #include "Window.hpp"
 #include "SceneLoader.hpp"
@@ -401,14 +401,16 @@ void TestProject::MainScene::setup(RetroFuturaGUI::Window* parentWindow)
     _members->_testProgressBar->SetBorderWidth(2.0f);
     _members->_testProgressBar->SetGraphColors(_chbge, RetroFuturaGUI::ColorState::Enabled);
     _members->_testProgressBar->SetGraphWidth(20.0f);
-    _members->_testProgressBar->SetMinValue<u32>(0);
-    _members->_testProgressBar->SetMaxValue<u32>(100);
-    _members->_testProgressBar->SetValue<u32>(50);
-    _members->_testProgressBar->SetGraphMode(RetroFuturaGUI::IRangedValue::GraphMode::Wave);
+    // Driven as a level meter for the left audio channel: RMS is linear 0..1.
+    _members->_testProgressBar->SetMinValue<f32>(0.0f);
+    _members->_testProgressBar->SetMaxValue<f32>(1.0f);
+    _members->_testProgressBar->SetValue<f32>(0.0f); // sets the value type too, so it must come after the range
+    _members->_testProgressBar->EnableGraph(true); // without this the bar has no fill to show
+    _members->_testProgressBar->SetGraphMode(RetroFuturaGUI::IRangedValue::GraphMode::Bar/*Wave*/);
     _members->_testProgressBar->SetIndicatorType(RetroFuturaGUI::IRangedValue::IndicatorType::Stroke);
-    _members->_testProgressBar->EnableIndicator(true);
-    _members->_testProgressBar->SetIndicatorSize(glm::vec2(8.0f, 18.0f), RetroFuturaGUI::IRangedValue::ElementSizing::Pixels);
-    _members->_testProgressBar->SetIndicatorBackgroundColors(testv, RetroFuturaGUI::ColorState::Enabled);
+    _members->_testProgressBar->EnableIndicator(false);
+    _members->_testProgressBar->SetIndicatorSize(glm::vec2(20.0f, 18.0f), RetroFuturaGUI::IRangedValue::ElementSizing::Pixels);
+    _members->_testProgressBar->SetGraphColors(testv, RetroFuturaGUI::ColorState::Enabled);
     _members->_testProgressBar->SetIndicatorCornerRadii(glm::vec4(5.0f));
     _members->_testProgressBar->SetOrientation(RetroFuturaGUI::IRangedValue::Orientation::Vertical);
 
@@ -601,6 +603,10 @@ void TestProject::MainScene::setup(RetroFuturaGUI::Window* parentWindow)
     _members->_testSeparatorLine->SetText("Section", false);
     _members->_testSeparatorLine->ShowText(true);
 
+//Video
+    //its size comes from the lasagna cell (FILL_XY below) - the picture fits inside it, black bars where the shapes differ
+    _members->_testVideo = std::make_unique<RetroFuturaGUI::Video>("TestVideo", static_cast<RetroFuturaGUI::Projection*>(&projection), _rootLasagna, RetroFuturaGUI::WidgetTypeID::Lasagna, window);
+
 //Garnish lasagna
     _rootLasagna->AttachWidget(1, 1, 0, &*_members->_testLabel, RetroFuturaGUI::SizingMode::FIXED, 1, 2);
     _rootLasagna->AttachWidget(0, 0, 0, &*_members->_testTextBox, RetroFuturaGUI::SizingMode::FIXED, 1, 2); //swapped with the combo box, which needs a cell drawn later
@@ -613,9 +619,10 @@ void TestProject::MainScene::setup(RetroFuturaGUI::Window* parentWindow)
     //_rootLasagna->AttachWidget(3, 2, 0, &*_members->_testCheckBox, RetroFuturaGUI::SizingMode::FIXED);
     //FILL_Y, not FILL_X: for a Vertical slider the cell should drive its length, which now runs down the screen
     //_rootLasagna->AttachWidget(3, 0, 0, &*_members->_testSlider, RetroFuturaGUI::SizingMode::FILL_Y, 2, 1);
-    //_rootLasagna->AttachWidget(3, 2, 0, &*_members->_testProgressBar, RetroFuturaGUI::SizingMode::FILL_X, 2, 1);
-    _rootLasagna->AttachWidget(3, 1, 0, &*_members->_testTable, RetroFuturaGUI::SizingMode::FIXED, 2, 2);
-    _rootLasagna->AttachWidget(3, 3, 0, &*_members->_testStepper, RetroFuturaGUI::SizingMode::FILL, 2, 1);
+    _rootLasagna->AttachWidget(3, 0, 0, &*_members->_testProgressBar, RetroFuturaGUI::SizingMode::FILL_Y, 2, 1);
+    //_rootLasagna->AttachWidget(3, 1, 0, &*_members->_testTable, RetroFuturaGUI::SizingMode::FIXED, 2, 2);
+    _rootLasagna->AttachWidget(3, 1, 0, &*_members->_testVideo, RetroFuturaGUI::SizingMode::FILL_XY, 2, 2);
+    //_rootLasagna->AttachWidget(3, 3, 0, &*_members->_testStepper, RetroFuturaGUI::SizingMode::FILL, 2, 1);
     _rootLasagna->AttachWidget(2, 0, 0, &*_members->_testSeparatorLine, RetroFuturaGUI::SizingMode::FIXED, 1, 1);
 
     //the combo box is a row of the extended one now, so the extended one takes the cell: row 2 so the open lists draw after the SvgImage on layer 1
@@ -635,6 +642,7 @@ void TestProject::MainScene::setup(RetroFuturaGUI::Window* parentWindow)
     _members->_testTextBox->Connect_OnCopy([this]() { on_testTextBox_copy(); }, false);
     _members->_testTextBox->Connect_OnPaste([this]() { on_testTextBox_paste(); }, false);
     //_members->_testSlider->Connect_OnValueChanged([this]() {on_testSlider_valueChanged(); }, false);
+    _members->_scene->Connect_OnUpdate([this]() { on_scene_update(); }, false);
     // Scrollbar -> table. Nothing pushes back the other way yet, so there's no feedback loop to guard.
     if(RetroFuturaGUI::Slider* _scrollSlider { _members->_testStepper->GetChildWidget<RetroFuturaGUI::Slider>("Slider") })
     {
