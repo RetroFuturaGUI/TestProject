@@ -1,6 +1,7 @@
 #pragma once
 #include "ISceneHost.hpp"
 #include <memory>
+#include <string_view>
 #define privateSlots private
 
 namespace RetroFuturaGUI { class Window; }
@@ -12,7 +13,9 @@ namespace TestProject
     class CustomMenuBarScene final : public RetroFuturaGUI::ISceneHost
     {
     public:
-        explicit CustomMenuBarScene(RetroFuturaGUI::Window* parentWindow);
+        /// @param sceneName The loader's key for this scene, so it has to differ in every window that gets a menu bar.
+        /// @param title The text drawn at the left of the bar.
+        CustomMenuBarScene(RetroFuturaGUI::Window* parentWindow, std::string_view sceneName, std::string_view title);
         CustomMenuBarScene() = delete;
         CustomMenuBarScene(const CustomMenuBarScene&) = delete;
         CustomMenuBarScene(CustomMenuBarScene&&) = delete;
@@ -25,6 +28,6 @@ namespace TestProject
 
     private:
         std::unique_ptr<CustomMenuBarScene_p> _members;
-        void setup(RetroFuturaGUI::Window* parentWindow);
+        void setup(RetroFuturaGUI::Window* parentWindow, std::string_view sceneName, std::string_view title);
     };
 }

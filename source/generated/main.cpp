@@ -161,8 +161,7 @@ i32 main()
 	{
 		auto now = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> elapsed = now - lastFrameTime;
-		lastFrameTime = now;
-
+		lastFrameTime = now;;
 		mainWindowTest.Draw();
 
 		

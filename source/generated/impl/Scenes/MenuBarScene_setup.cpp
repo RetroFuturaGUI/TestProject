@@ -54,7 +54,7 @@ void TestProject::MenuBarScene::setup(RetroFuturaGUI::Window* parentWindow)
     _members->_scene->SetLasagnaAxis(menuBarAxis, &projection);
     _members->_scene->SetReservedEdge(RetroFuturaGUI::DockEdge::Top, 40.0f);
 
-    if(RetroFuturaGUI::Lasagna* _rootLasagna { _members->_scene->GetRootLasagna() })
+    if(RetroFuturaGUI::Lasagna* _rootLasagna { _members->_scene->GetRootContainer<RetroFuturaGUI::Lasagna>() })
     {
         _members->_menuBarLabel = std::make_unique<RetroFuturaGUI::Label>("TestMenuBarLabel", static_cast<RetroFuturaGUI::Projection*>(&projection), _rootLasagna, RetroFuturaGUI::WidgetTypeID::Lasagna, window);
         _members->_menuBarLabel->SetFontFamily("Arial", 25.0f, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Normal);

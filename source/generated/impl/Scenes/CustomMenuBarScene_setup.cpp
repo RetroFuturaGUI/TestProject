@@ -8,10 +8,10 @@
 #include <glm/ext/vector_float3.hpp>
 #include <memory>
 
-TestProject::CustomMenuBarScene::CustomMenuBarScene(RetroFuturaGUI::Window* parentWindow)
+TestProject::CustomMenuBarScene::CustomMenuBarScene(RetroFuturaGUI::Window* parentWindow, std::string_view sceneName, std::string_view title)
 {
     _members = std::make_unique<CustomMenuBarScene_p>();
-    setup(parentWindow);
+    setup(parentWindow, sceneName, title);
 }
 
 TestProject::CustomMenuBarScene::~CustomMenuBarScene()
@@ -30,7 +30,7 @@ RetroFuturaGUI::Scene* TestProject::CustomMenuBarScene::GetScene() const
     return _members->_scene.get();
 }
 
-void TestProject::CustomMenuBarScene::setup(RetroFuturaGUI::Window* parentWindow)
+void TestProject::CustomMenuBarScene::setup(RetroFuturaGUI::Window* parentWindow, std::string_view sceneName, std::string_view title)
 {
     if(!parentWindow)
         return;
@@ -38,8 +38,8 @@ void TestProject::CustomMenuBarScene::setup(RetroFuturaGUI::Window* parentWindow
     RetroFuturaGUI::Projection& projection { *parentWindow->GetProjection() };
     GLFWwindow* window { parentWindow->GetGlfwWindow() };
 
-//A menu bar built out of a MenuBar widget rather than the window's own WindowBar: it reserves a strip
-//across the top and carries the title, one menu and the window controls in its flex.
+//The window's title bar: a MenuBar that reserves a strip across the top and carries the title, one
+//menu and the window controls in its flex. The window draws no bar of its own.
 //The bar lays its own slots out, so the root Lasagna only has to hand it the whole reserved strip.
     RetroFuturaGUI::AxisDefinition menuBarAxis
     {
@@ -48,15 +48,17 @@ void TestProject::CustomMenuBarScene::setup(RetroFuturaGUI::Window* parentWindow
         ._LayerDefinition  = { 1.0f }
     };
 
-    _members->_scene = RetroFuturaGUI::SceneLoader::CreateScene("CustomMenuBarScene", parentWindow);
+    _members->_scene = RetroFuturaGUI::SceneLoader::CreateScene(sceneName, parentWindow);
 
     if(!_members->_scene)
         return;
 
     _members->_scene->SetLasagnaAxis(menuBarAxis, &projection);
     _members->_scene->SetReservedEdge(RetroFuturaGUI::DockEdge::Top, 40.0f);
+    //While the window sits in a tab, the tab's field shows its title and close button instead, and the content takes the strip
+    _members->_scene->SetHiddenInTab(true);
 
-    RetroFuturaGUI::Lasagna* rootLasagna { _members->_scene->GetRootLasagna() };
+    RetroFuturaGUI::Lasagna* rootLasagna { _members->_scene->GetRootContainer<RetroFuturaGUI::Lasagna>() };
 
     if(!rootLasagna)
         return;
@@ -91,16 +93,18 @@ void TestProject::CustomMenuBarScene::setup(RetroFuturaGUI::Window* parentWindow
 
     /* The cells have to exist before anything can be put in one, and the definitions are what create
        them. Title and menu take their content's width, the spacer soaks up whatever is left, and the
-       three controls are squares of the bar's own height, which pins them to the right edge. */
+       undock handle and the three controls are squares of the bar's own height, which pins them to the right edge. */
     std::vector<RetroFuturaGUI::MenuBar::FlexDefinition> flexDefinition
     {
-        //The title drags the window. The flag only takes on a Label, so the empty spacer cannot carry it.
-        { ._FlexSizing = RetroFuturaGUI::MenuBar::FlexSizing::Auto,   ._Width = 0.0f, ._IsWindowDrag = true  },
-        { ._FlexSizing = RetroFuturaGUI::MenuBar::FlexSizing::Auto,   ._Width = 0.0f, ._IsWindowDrag = false },
-        { ._FlexSizing = RetroFuturaGUI::MenuBar::FlexSizing::Star,   ._Width = 1.0f, ._IsWindowDrag = false },
-        { ._FlexSizing = RetroFuturaGUI::MenuBar::FlexSizing::Square, ._Width = 0.0f, ._IsWindowDrag = false },
-        { ._FlexSizing = RetroFuturaGUI::MenuBar::FlexSizing::Square, ._Width = 0.0f, ._IsWindowDrag = false },
-        { ._FlexSizing = RetroFuturaGUI::MenuBar::FlexSizing::Square, ._Width = 0.0f, ._IsWindowDrag = false }
+        //The title drags the window, with its whole docking group. The flag only takes on a Label, so the empty spacer cannot carry it.
+        { ._FlexSizing = RetroFuturaGUI::MenuBar::FlexSizing::Auto,   ._Width = 0.0f, ._IsWindowDrag = true,  ._IsWindowUndock = false },
+        { ._FlexSizing = RetroFuturaGUI::MenuBar::FlexSizing::Auto,   ._Width = 0.0f, ._IsWindowDrag = false, ._IsWindowUndock = false },
+        { ._FlexSizing = RetroFuturaGUI::MenuBar::FlexSizing::Star,   ._Width = 1.0f, ._IsWindowDrag = false, ._IsWindowUndock = false },
+        //The undock handle pulls the window out of its docking group and drags it alone
+        { ._FlexSizing = RetroFuturaGUI::MenuBar::FlexSizing::Square, ._Width = 0.0f, ._IsWindowDrag = false, ._IsWindowUndock = true  },
+        { ._FlexSizing = RetroFuturaGUI::MenuBar::FlexSizing::Square, ._Width = 0.0f, ._IsWindowDrag = false, ._IsWindowUndock = false },
+        { ._FlexSizing = RetroFuturaGUI::MenuBar::FlexSizing::Square, ._Width = 0.0f, ._IsWindowDrag = false, ._IsWindowUndock = false },
+        { ._FlexSizing = RetroFuturaGUI::MenuBar::FlexSizing::Square, ._Width = 0.0f, ._IsWindowDrag = false, ._IsWindowUndock = false }
     };
     _members->_menuBar->SetFlexDefinition(flexDefinition);
 
@@ -110,11 +114,12 @@ void TestProject::CustomMenuBarScene::setup(RetroFuturaGUI::Window* parentWindow
         std::make_unique<RetroFuturaGUI::Label>("CustomMenuBarLabel", &projection, &*_members->_menuBar, RetroFuturaGUI::WidgetTypeID::MenuBar, window)
     };
     menuBarLabel->SetFontFamily("Arial", 25.0f, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Normal);
-    menuBarLabel->SetText("Custom MenuBar Scene", false);
+    menuBarLabel->SetText(title, false);
     menuBarLabel->SetTextAlignment(RetroFuturaGUI::TextAlignment::Left);
     menuBarLabel->SetTextColor(glm::vec4(1.0f), RetroFuturaGUI::ColorState::Enabled);
     menuBarLabel->SetTextPadding(5.0f);
-    menuBarLabel->SetSize(glm::vec3(200.0f, 30.0f, 0.01f));
+    //As tall as the bar: 25 pt rasterizes about 33 px tall, and text is clipped to its label, so a 30 px label cuts off the tails of p, g and y
+    menuBarLabel->SetSize(glm::vec3(200.0f, 40.0f, 0.01f));
     _members->_menuBar->AddWidget(std::move(menuBarLabel), 0);
     _members->_menuBarLabel = _members->_menuBar->GetWidget<RetroFuturaGUI::Label>(0);
 
@@ -128,6 +133,16 @@ void TestProject::CustomMenuBarScene::setup(RetroFuturaGUI::Window* parentWindow
 
     _members->_menuBar->AddWidget(std::move(colorPreview), 1);
     _members->_colorPreview = _members->_menuBar->GetWidget<RetroFuturaGUI::ColorPreview>(1);
+
+//Undock handle
+    //An icon rather than a button, because the drag would swallow a button's clicks, and the cell's hover color shows it can be grabbed
+    std::unique_ptr<RetroFuturaGUI::SvgImage> undockHandle
+    {
+        std::make_unique<RetroFuturaGUI::SvgImage>("CustomMenuBarUndock", &projection, &*_members->_menuBar, RetroFuturaGUI::WidgetTypeID::MenuBar, window, "Resources/img/Undock.svg")
+    };
+    undockHandle->SetSize(glm::vec3(20.0f, 20.0f, 0.01f)); //the buttons' 28 px less their 4 px icon padding on each side
+    _members->_menuBar->AddWidget(std::move(undockHandle), 3);
+    _members->_undockHandle = _members->_menuBar->GetWidget<RetroFuturaGUI::SvgImage>(3);
 
 //Window controls
     std::unique_ptr<RetroFuturaGUI::Button> buttonMinimize
@@ -146,8 +161,8 @@ void TestProject::CustomMenuBarScene::setup(RetroFuturaGUI::Window* parentWindow
     buttonMinimize->SetBackgroundColor(glm::vec4(0.8f, 0.8f, 0.8f, 0.55f), RetroFuturaGUI::ColorState::Clicked);
     buttonMinimize->SetBorderWidth(0.0f);
     buttonMinimize->Connect_OnClick([window]() { glfwIconifyWindow(window); }, false);
-    _members->_menuBar->AddWidget(std::move(buttonMinimize), 3);
-    _members->_buttonMinimize = _members->_menuBar->GetWidget<RetroFuturaGUI::Button>(3);
+    _members->_menuBar->AddWidget(std::move(buttonMinimize), 4);
+    _members->_buttonMinimize = _members->_menuBar->GetWidget<RetroFuturaGUI::Button>(4);
 
     std::unique_ptr<RetroFuturaGUI::Button> buttonMaximize
     {
@@ -155,7 +170,7 @@ void TestProject::CustomMenuBarScene::setup(RetroFuturaGUI::Window* parentWindow
     };
     buttonMaximize->SetSize(glm::vec3(28.0f, 28.0f, 0.01f));
     //Maximize while the window is restored, WindowMode while it is maximized. The click handler swaps it.
-    buttonMaximize->SetBackgroundImage(glfwGetWindowAttrib(window, GLFW_MAXIMIZED) == GLFW_TRUE
+    buttonMaximize->SetBackgroundImage(parentWindow->IsMaximized()
         ? "Resources/img/WindowMode.svg"
         : "Resources/img/Maximize.svg");
     buttonMaximize->SetBackgroundImagePadding(4.0f);
@@ -164,21 +179,21 @@ void TestProject::CustomMenuBarScene::setup(RetroFuturaGUI::Window* parentWindow
     buttonMaximize->SetBackgroundColor(glm::vec4(0.7f, 0.7f, 0.7f, 0.35f), RetroFuturaGUI::ColorState::Hover);
     buttonMaximize->SetBackgroundColor(glm::vec4(0.8f, 0.8f, 0.8f, 0.55f), RetroFuturaGUI::ColorState::Clicked);
     buttonMaximize->SetBorderWidth(0.0f);
-    //GLFW is asked directly, because the window's own maximize toggle is not part of its public surface.
     //The button is captured so the icon can follow the state; it outlives the callback, being owned by
     //the flex slot the callback is reached through.
     RetroFuturaGUI::Button* maximizeButton { buttonMaximize.get() };
-    buttonMaximize->Connect_OnClick([window, maximizeButton]()
+    buttonMaximize->Connect_OnClick([parentWindow, maximizeButton]()
         {
-            const bool wasMaximized { glfwGetWindowAttrib(window, GLFW_MAXIMIZED) == GLFW_TRUE };
-
-            if(wasMaximized)
-                glfwRestoreWindow(window);
-            else
-                glfwMaximizeWindow(window);
+            if(!parentWindow)
+                return;
 
             if(!maximizeButton)
                 return;
+
+            //The state is read before toggling, because on Linux the window manager applies a maximize
+            //later, and asking right after the toggle can still return the old state.
+            const bool wasMaximized { parentWindow->IsMaximized() };
+            parentWindow->ToggleMaximize();
 
             //Reloads the file on each click. These icons are a few hundred bytes, and a window is not
             //maximized often enough for caching them to be worth the two extra members.
@@ -187,8 +202,8 @@ void TestProject::CustomMenuBarScene::setup(RetroFuturaGUI::Window* parentWindow
                 : "Resources/img/WindowMode.svg");
             maximizeButton->SetBackgroundImagePadding(4.0f);
         }, false);
-    _members->_menuBar->AddWidget(std::move(buttonMaximize), 4);
-    _members->_buttonMaximize = _members->_menuBar->GetWidget<RetroFuturaGUI::Button>(4);
+    _members->_menuBar->AddWidget(std::move(buttonMaximize), 5);
+    _members->_buttonMaximize = _members->_menuBar->GetWidget<RetroFuturaGUI::Button>(5);
 
     std::unique_ptr<RetroFuturaGUI::Button> buttonClose
     {
@@ -203,8 +218,65 @@ void TestProject::CustomMenuBarScene::setup(RetroFuturaGUI::Window* parentWindow
     buttonClose->SetBackgroundColor(glm::vec4(1.0f, 0.3f, 0.3f, 0.6f), RetroFuturaGUI::ColorState::Clicked);
     buttonClose->SetBorderWidth(0.0f);
     buttonClose->Connect_OnClick([window]() { glfwSetWindowShouldClose(window, GLFW_TRUE); }, false);
-    _members->_menuBar->AddWidget(std::move(buttonClose), 5);
-    _members->_buttonClose = _members->_menuBar->GetWidget<RetroFuturaGUI::Button>(5);
+    _members->_menuBar->AddWidget(std::move(buttonClose), 6);
+    _members->_buttonClose = _members->_menuBar->GetWidget<RetroFuturaGUI::Button>(6);
 
     rootLasagna->AttachWidget(0, 0, 0, &*_members->_menuBar, RetroFuturaGUI::SizingMode::FILL);
+
+//Corners
+    //The bar lies over the window's top corners, so it rounds its own like the window's, and squares them with the window's
+    //where docked windows meet. Each frame, since docking can change them any time.
+    _members->_scene->Connect_OnUpdate([this, parentWindow]()
+        {
+            if(!parentWindow)
+                return;
+
+            if(!_members)
+                return;
+
+            if(!_members->_menuBar)
+                return;
+
+            const glm::vec4 windowRadii { parentWindow->GetDrawnCornerRadii() };
+            _members->_menuBar->SetCornerRadii(glm::vec4(windowRadii.x, windowRadii.y, 0.0f, 0.0f));
+        }, false);
+
+//Undock handle look
+    //The bar disables the undock handle while the window is docked to nothing. Its paths then turn gray, and get their
+    //own white back once the window is docked again.
+    _members->_scene->Connect_OnUpdate([this]()
+        {
+            if(!_members)
+                return;
+
+            if(!_members->_undockHandle)
+                return;
+
+            const bool isEnabled { _members->_undockHandle->IsEnabled() };
+
+            //Only on a change, since every path color rasterizes the icon again
+            if(isEnabled == _members->_undockHandleLooksEnabled)
+                return;
+
+            _members->_undockHandleLooksEnabled = isEnabled;
+
+            for(const RetroFuturaGUI::SvgPathInfo& path : _members->_undockHandle->GetNamedPaths())
+            {
+                if(isEnabled)
+                {
+                    _members->_undockHandle->ClearPathFill(path.name);
+                    continue;
+                }
+
+                _members->_undockHandle->SetPathFill(path.name, RetroFuturaGUI::SvgPathFill
+                {
+                    .fillType = RetroFuturaGUI::FillType::SOLID,
+                    .colors = { glm::vec4(0.4f, 0.4f, 0.45f, 1.0f) },
+                    .gradientDegree = 0.0f,
+                    .gradientOffset = 0.0f,
+                    .gradientAnimationSpeed = 0.0f,
+                    .gradientRotationSpeed = 0.0f
+                });
+            }
+        }, false);
 }

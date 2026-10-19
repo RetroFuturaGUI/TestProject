@@ -18,7 +18,10 @@
 #include "ComboBox.hpp"
 #include "ExtendedComboBox.hpp"
 #include "Video.hpp"
+#include "LineDiagram.hpp"
+#include "MultilineTextBox.hpp"
 #include <memory>
+#include <vector>
 
 namespace TestProject
 {
@@ -26,7 +29,6 @@ namespace TestProject
     {
     public:
         std::unique_ptr<RetroFuturaGUI::Scene> _scene;
-        std::unique_ptr<RetroFuturaGUI::Button> _testButton;
         std::unique_ptr<RetroFuturaGUI::Label> _testLabel;
         std::unique_ptr<RetroFuturaGUI::TextBox> _testTextBox;
         std::unique_ptr<RetroFuturaGUI::Image> _testImage;
@@ -45,6 +47,14 @@ namespace TestProject
         std::unique_ptr<RetroFuturaGUI::ComboBox> _testComboBox;
         std::unique_ptr<RetroFuturaGUI::ExtendedComboBox> _testExtendedComboBox;
         std::unique_ptr<RetroFuturaGUI::SeparatorLine> _testSeparatorLine;
-        std::unique_ptr<RetroFuturaGUI::Video> _testVideo;
+        //Non-owning: the video lives in the ScrollViewScene of the secondary window, which hands it over through SetVideo.
+        //Null until then, and again once ClearVideo runs as that window closes.
+        RetroFuturaGUI::Video* _testVideo { nullptr };
+        std::vector<f32> _testHistogramData;
+        std::unique_ptr<RetroFuturaGUI::LineDiagram> _testLineDiagram;
+        std::unique_ptr<RetroFuturaGUI::MultilineTextBox> _testMultilineTextBox;
+        std::unique_ptr<RetroFuturaGUI::Button> _openPopupButton;
+        //Non-owning: the window this scene is in, which popups open over
+        RetroFuturaGUI::Window* _window { nullptr };
     };
 }

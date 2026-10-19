@@ -1,5 +1,7 @@
 #include "MainScene.hpp"
 #include "MainScene_p.hpp"
+#include "PopupScene.hpp"
+#include "Window.hpp"
 #include <print>
 #include "AudioMetadata.hpp"
 #include <format>
@@ -107,40 +109,6 @@ void TestProject::MainScene::testAudioMetadata()
         printAudioMetadata(path);
 }
 
-void TestProject::MainScene::on_testButton_clicked()
-{
-    //static bool checkRef = false;
-    std::println("testButton Clicked!");
-    //testAudioMetadata();
-    //glm::vec3 currentRotation = _members->_testModel->GetRotation();
-    //_members->_testModel->SetRotation(currentRotation += glm::vec3(4.0f, 6.0f, 7.0f));
-    //_members->_testCheckBox->SetInheritValueReference(&checkRef);
-    //_members->_testCheckBox->UseInherietedValue(true);
-    _members->_testTextBox->SetValue<f64>(0.33333333333333333333333333333333333333333333333333333333333333333333, false);
-    _members->_testTable->SetValue<f64>(0.33333333333333333333333333333333333333333333333333333333333333333333, { ._Row = 0, ._Column = 0 }, false);
-
-    // first click opens and plays, every click after that pauses or carries on
-    static bool opened { false };
-    static bool playing { false };
-
-    if(!opened)
-    {
-        opened = _members->_testVideo->OpenVideoFile(R"(C:\Users\Sophie\Videos\test.webm)");
-        std::println("video open: {}", opened);
-
-        if(!opened)
-            return;
-    }
-
-    if(playing)
-        _members->_testVideo->Pause();
-    else
-        _members->_testVideo->Play();
-
-    playing = !playing;
-
-}
-
 void TestProject::MainScene::on_testTextBox_textChange()
 {
     /*static std::string valueStr;
@@ -237,5 +205,26 @@ void TestProject::MainScene::on_testSlider_valueChanged()
 
 void TestProject::MainScene::on_scene_update()
 {
+    if(!_members)
+        return;
+
+    //Null until the secondary window's ScrollViewScene hands its video over, and again once that window is closed
+    if(!_members->_testVideo)
+        return;
+
+    if(!_members->_testProgressBar)
+        return;
+
     _members->_testProgressBar->SetValue<f32>(_members->_testVideo->GetChannelVolume(0), false);
+}
+
+void TestProject::MainScene::on_openPopupButton_click()
+{
+    if(!_members)
+        return;
+
+    if(!_members->_window)
+        return;
+
+    _members->_window->PushPopup(PopupScene::CreatePopup(0));
 }

@@ -2,6 +2,11 @@
 #include "MainScene.hpp"
 //#include "MenuBarScene.hpp"
 #include "CustomMenuBarScene.hpp"
+#include "EnvironmentScene.hpp"
+#include "SecondaryWindow.hpp"
+#include "TabWindow.hpp"
+#include "NoteWindow.hpp"
+#include "WindowTab.hpp"
 #include "SceneLoader.hpp"
 #include "FontManager.hpp"
 #include "IncludeHelper.hpp"
@@ -42,10 +47,7 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
     GLFWwindow* window = _members->_window->GetGlfwWindow();
     RetroFuturaGUI::Projection& projection = *_members->_window->GetProjection(); 
     glm::vec2 resolution = projection.GetResolution();
-    //CustomMenuBarScene carries the title and the window controls now, so the window's own bar is
-    //never created. ShowWindowBar is the only thing that builds one, and GetWindowBar() dereferences
-    //it unguarded, so every call below had to go with it.
-    //_members->_window->ShowWindowBar(true);
+
 #if defined(TARGET_PLATFORM_LINUX)
     RetroFuturaGUI::FontManager::LoadFont("Noto Sans", 25, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Regular, BasicLatinFirst, BasicLatinLast);
     RetroFuturaGUI::FontManager::ExtendFontset("Noto Sans", "Noto Sans", 25, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Regular, Latin1SupplementFirst, Latin1SupplementLast);
@@ -58,46 +60,9 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
     //RetroFuturaGUI::FontManager::ExtendFontset("Yu Mincho", "Yu Mincho", 25, PlatformBridge::Fonts::Slant::Roman, PlatformBridge::Fonts::Weight::Regular, KatakanaFirst, KatakanaLast);
 #endif
     
-//Window::SetWindowTitle rather than the bar's: it sets the native title GLFW shows in the taskbar,
-//and only forwards to the bar when one exists.
-#if defined(TARGET_PLATFORM_LINUX)
-    _members->_window->SetWindowTitle(windowTitle, "Noto Sans");
-#elif defined(TARGET_PLATFORM_WINDOWS)
-    _members->_window->SetWindowTitle(windowTitle, "Arial");
-#endif
-
-//The window's own bar is gone, so all of its styling is dead. Kept commented rather than deleted, to
-//make going back to it a matter of uncommenting this block and ShowWindowBar above.
-    //_members->_window->GetWindowBar().EnableElement(RetroFuturaGUI::WindowBar::ElementType::Title);
-    //_members->_window->GetWindowBar().EnableElement(RetroFuturaGUI::WindowBar::ElementType::CloseButton);
-    //_members->_window->GetWindowBar().EnableElement(RetroFuturaGUI::WindowBar::ElementType::MaximizeButton);
-    //_members->_window->GetWindowBar().EnableElement(RetroFuturaGUI::WindowBar::ElementType::MinimizeButton);
-    //_members->_window->GetWindowBar().EnableElement(RetroFuturaGUI::WindowBar::ElementType::Background);
-    //std::vector<glm::vec4>col1( {{ glm::vec4(1.0f, 0.1f, 0.1f, 0.65f) }} );
-    //std::vector<glm::vec4>col2( {{ glm::vec4(1.0f, 0.2f, 0.2f, 0.65f) }} );
-    //std::vector<glm::vec4>col3( {{ glm::vec4(1.0f, 0.3f, 0.3f, 0.75f) }} );
-    //_members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::CloseButton, std::span<glm::vec4>(col1.data(), col1.size()), RetroFuturaGUI::ColorState::Enabled);
-    //_members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::CloseButton, std::span<glm::vec4>(col2.data(), col2.size()), RetroFuturaGUI::ColorState::Hover);
-    //_members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::CloseButton, std::span<glm::vec4>(col3.data(), col3.size()), RetroFuturaGUI::ColorState::Clicked);
-
-    //std::vector<glm::vec4>col4( {{ glm::vec4(0.5f, 0.5f, 0.5f, 0.75f) }} );
-    //std::vector<glm::vec4>col5( {{ glm::vec4(0.7f, 0.7f, 0.7f, 0.75f) }} );
-    //std::vector<glm::vec4>col6( {{ glm::vec4(0.8f, 0.8f, 0.8f, 0.85f) }} );
-    //_members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MaximizeButton, std::span<glm::vec4>(col4.data(), col4.size()), RetroFuturaGUI::ColorState::Enabled);
-    //_members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MaximizeButton, std::span<glm::vec4>(col5.data(), col5.size()), RetroFuturaGUI::ColorState::Hover);
-    //_members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MaximizeButton, std::span<glm::vec4>(col6.data(), col6.size()), RetroFuturaGUI::ColorState::Clicked);
-
-    //_members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MinimizeButton, std::span<glm::vec4>(col4.data(), col4.size()), RetroFuturaGUI::ColorState::Enabled);
-    //_members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MinimizeButton, std::span<glm::vec4>(col5.data(), col5.size()), RetroFuturaGUI::ColorState::Hover);
-    //_members->_window->GetWindowBar().SetButtonBackgroundColors(RetroFuturaGUI::WindowBar::ElementType::MinimizeButton, std::span<glm::vec4>(col6.data(), col6.size()), RetroFuturaGUI::ColorState::Clicked);
-
-    //_members->_window->GetWindowBar().SetButtonCornerRadii(glm::vec4(10.0f), RetroFuturaGUI::WindowBar::ElementType::CloseButton);
-	//_members->_window->GetWindowBar().SetButtonCornerRadii(glm::vec4(10.0f), RetroFuturaGUI::WindowBar::ElementType::MaximizeButton);
-	//_members->_window->GetWindowBar().SetButtonCornerRadii(glm::vec4(10.0f), RetroFuturaGUI::WindowBar::ElementType::MinimizeButton);
-
-
-    //std::vector<glm::vec4>col8( {{ glm::vec4(0.5f, 0.0f, 1.0f, 1.0f) }} );
-    //_members->_window->GetWindowBar().SetBackgroundColors(std::span<glm::vec4>(col8.data(), col8.size()));
+//This sets only the title the taskbar shows. The title drawn inside the window is the label in
+//CustomMenuBarScene, which is set on its own.
+    _members->_window->SetWindowTitle(windowTitle);
 
     if(frutiger)
     {
@@ -116,11 +81,17 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
 
 
 //Scenes own their own widgets; this window only decides which ones exist and in what order.
-//The docked menu bar goes first, because reservations are taken in insertion order and MainScene
-//has to be fitted into whatever is left.
+//Scenes draw in insertion order, so EnvironmentScene goes first to sit behind the other two. It is an
+//overlay and reserves nothing, so going first doesn't take the menu bar's strip: docked scenes reserve
+//in their own pass. Among the docked scenes the menu bar comes first, because reservations are taken in
+//insertion order and MainScene has to be fitted into whatever is left.
+    _members->_scenes.push_back(std::make_unique<EnvironmentScene>(_members->_window.get()));
     //_members->_scenes.push_back(std::make_unique<MenuBarScene>(_members->_window.get()));
-    _members->_scenes.push_back(std::make_unique<CustomMenuBarScene>(_members->_window.get()));
-    _members->_scenes.push_back(std::make_unique<MainScene>(_members->_window.get()));
+    _members->_scenes.push_back(std::make_unique<CustomMenuBarScene>(_members->_window.get(), "CustomMenuBarScene", "Test"));
+    //Kept as its own type, so the secondary window's video can be handed to it below and taken back when that window closes
+    std::unique_ptr<MainScene> mainScene { std::make_unique<MainScene>(_members->_window.get()) };
+    _members->_mainScene = mainScene.get();
+    _members->_scenes.push_back(std::move(mainScene));
 
 
     for(const std::unique_ptr<RetroFuturaGUI::ISceneHost>& _host : _members->_scenes)
@@ -138,8 +109,66 @@ void TestProject::MainWindow::setup(std::string_view windowTitle, const i32 widt
         RetroFuturaGUI::SceneLoader::SetReleaseHook(RetroFuturaGUI::SceneLoader::GetSceneID(_scene->GetName()),
             [this, _closing]()
             {
+                //A closed MainScene must not be told about the video any more
+                if(_closing == _members->_mainScene)
+                    _members->_mainScene = nullptr;
+
                 _members->_scenes.remove_if([_closing](const std::unique_ptr<RetroFuturaGUI::ISceneHost>& _entry)
                     { return _entry.get() == _closing; });
             });
     }
+
+//ScrollViewScene has a window of its own, beside this one. 600 px fits its menu bar: title and menu take 200 px each, and the
+//undock handle and the three window controls 40 px each.
+    _members->_secondaryWindow = std::make_unique<SecondaryWindow>("RetroFuturaGUI ScrollView", 600, 720);
+
+//The tab window holds the secondary window and a note window in its tabs. 640 px fits its menu bar, like the secondary window's.
+    _members->_tabWindow = std::make_unique<TabWindow>("RetroFuturaGUI Tabs", 640, 720);
+    _members->_noteWindow = std::make_unique<NoteWindow>("Notes", 600, 480);
+
+    //Creating a window makes its GL context current, so this window's is made current again before its widgets are touched
+    glfwMakeContextCurrent(window);
+
+    RetroFuturaGUI::Window* secondaryWindow { _members->_secondaryWindow->GetWindow() };
+    RetroFuturaGUI::Window* tabWindow { _members->_tabWindow->GetWindow() };
+    RetroFuturaGUI::Window* noteWindow { _members->_noteWindow->GetWindow() };
+    RetroFuturaGUI::WindowTab* windowTab { _members->_tabWindow->GetWindowTab() };
+
+    if(!secondaryWindow)
+        return;
+
+    if(!tabWindow)
+        return;
+
+    if(!noteWindow)
+        return;
+
+    if(!windowTab)
+        return;
+
+    //Rounded corners with a thin frame, in the menu bars' border color. The corners where docked windows meet are squared, and a
+    //window in a tab takes the tab's corners instead.
+    for(RetroFuturaGUI::Window* framed : { _members->_window.get(), tabWindow, secondaryWindow, noteWindow })
+    {
+        if(!framed)
+            continue;
+
+        framed->SetCornerRadii(glm::vec4(12.0f));
+        framed->SetBorderWidth(1.0f);
+        framed->SetBorderColor(glm::vec4(0.35f, 0.35f, 0.45f, 1.0f), RetroFuturaGUI::ColorState::Enabled);
+    }
+
+    //Both ways of docking from the start: the tab window docks to this window's right edge, 8 px away, where it takes this
+    //window's height, and the other two windows dock into its tabs. Dragging a tab out pulls its window out, and dragging a
+    //window by its bar over the tab strip puts it back.
+    _members->_window->SetDockingPadding(8.0f);
+    _members->_window->DockWindow(tabWindow, RetroFuturaGUI::DockEdge::Right);
+    windowTab->AddWindow(secondaryWindow);
+    windowTab->AddWindow(noteWindow);
+
+    if(!_members->_mainScene)
+        return;
+
+    //MainScene shows the sound of the video in the other window
+    _members->_mainScene->SetVideo(_members->_secondaryWindow->GetVideo());
 }

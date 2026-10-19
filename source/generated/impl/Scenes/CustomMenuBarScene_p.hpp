@@ -5,6 +5,7 @@
 #include "Button.hpp"
 #include "ComboBox.hpp"
 #include "ColorPreview.hpp"
+#include "SvgImage.hpp"
 #include <memory>
 
 namespace TestProject
@@ -19,6 +20,8 @@ namespace TestProject
            whatever it is handed, so the scene keeps plain pointers to reach them again. */
         RetroFuturaGUI::Label* _menuBarLabel { nullptr };
         RetroFuturaGUI::ColorPreview* _colorPreview { nullptr };
+        RetroFuturaGUI::SvgImage* _undockHandle { nullptr };
+        bool _undockHandleLooksEnabled { true }; //the icon starts in its own white, the enabled look
         RetroFuturaGUI::Button* _buttonMinimize { nullptr };
         RetroFuturaGUI::Button* _buttonMaximize { nullptr };
         RetroFuturaGUI::Button* _buttonClose { nullptr };

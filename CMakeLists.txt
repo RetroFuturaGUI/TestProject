@@ -34,10 +34,22 @@ if(DEFINED LANG AND LANG)
     add_library(TestProject SHARED
         "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/main.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Windows/MainWindow_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Windows/SecondaryWindow_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Windows/TabWindow_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Windows/NoteWindow_setup.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/MainScene_setup.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/MenuBarScene_setup.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/CustomMenuBarScene_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/EnvironmentScene_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/ScrollViewScene_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/PopupScene_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/TabScene_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/NoteScene_setup.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/source/code/MainScene.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/code/EnvironmentScene.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/code/ScrollViewScene.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/code/PopupScene.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/code/TabScene.cpp"
     )
     set_target_properties(TestProject PROPERTIES OUTPUT_NAME "TestProjectNative")
     set(DYNLIB_MODE ON CACHE BOOL "Build as a dynamic library")
@@ -48,10 +60,22 @@ else()
     add_executable("TestProject"
         "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/main.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Windows/MainWindow_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Windows/SecondaryWindow_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Windows/TabWindow_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Windows/NoteWindow_setup.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/MainScene_setup.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/MenuBarScene_setup.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/CustomMenuBarScene_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/EnvironmentScene_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/ScrollViewScene_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/PopupScene_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/TabScene_setup.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/impl/Scenes/NoteScene_setup.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/source/code/MainScene.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/code/EnvironmentScene.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/code/ScrollViewScene.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/code/PopupScene.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/source/code/TabScene.cpp"
     )
 
     # MSVC only: sets the process codepage to UTF-8 so narrow paths work - see app.manifest.
